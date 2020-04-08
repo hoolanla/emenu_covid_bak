@@ -184,18 +184,23 @@ class _ShowData extends State<FirstPage2> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
+
       appBar: new AppBar(
         backgroundColor: Colors.white,
         title: new Text(
-          'eMENU',
+          'เทสต์ฟอนท์',
           textAlign: TextAlign.center,
           style: TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.bold,
             fontSize: 20.0,
+            fontFamily: 'Kanit',
+
           ),
         ),
+
       ),
+
       bottomNavigationBar: new BottomAppBar(
         child: new Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

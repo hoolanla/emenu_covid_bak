@@ -9,9 +9,6 @@ import 'package:emenu_covid/sqlite/db_helper.dart';
 import 'package:emenu_covid/screens/home/newOrder.dart';
 import 'package:emenu_covid/globals.dart';
 
-
-
-
 String _mImage;
 String _mRestaurantName;
 Future<Menu> _menuPage1;
@@ -31,7 +28,7 @@ class DetailCommendPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-      title: "DETAIL",
+      title: 'รายละเอียด',
       debugShowCheckedModeBanner: false,
       home: new HomePage(
         restaurantID: restaurantID,
@@ -45,7 +42,6 @@ class HomePage extends StatefulWidget {
 
   HomePage({
     this.restaurantID,
-
   });
 
   @override
@@ -118,24 +114,20 @@ class _HomePageState extends State<HomePage>
     } else {}
   }
 
-
-  refreshPage1()  {
+  refreshPage1() {
     String strBody = '{"restaurantID":"${widget.restaurantID}"}';
     setState(() {
-      _menuPage1 = NetworkFoods.loadFoodsAsset(RestaurantID: widget.restaurantID,Recommend: '0');
+      _menuPage1 = NetworkFoods.loadFoodsAsset(
+          RestaurantID: widget.restaurantID, Recommend: '0');
     });
   }
 
-
-  refreshRestCover()  {
+  refreshRestCover() {
     String strBody = '{"restaurantID":"${widget.restaurantID}"}';
     setState(() {
       _rest = NetworkFoods.loadRestaurantByID(strBody: strBody);
     });
   }
-
-
-
 
   @override
   void initState() {
@@ -151,7 +143,6 @@ class _HomePageState extends State<HomePage>
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-
         backgroundColor: Colors.white,
         title: Text(
           'COVID FOOD',
@@ -160,6 +151,7 @@ class _HomePageState extends State<HomePage>
             color: Colors.black,
             fontSize: 20.0,
             fontWeight: FontWeight.bold,
+            fontFamily: 'Kanit',
           ),
         ),
         bottom: TabBar(
@@ -174,7 +166,10 @@ class _HomePageState extends State<HomePage>
             Padding(
               padding: const EdgeInsets.only(right: 0),
               child: new Tab(
-                child: Text('รายการอาหาร',style: TextStyle(color: Colors.black),),
+                child: Text(
+                  'รายการอาหาร',
+                  style: TextStyle(color: Colors.black, fontFamily: 'Kanit'),
+                ),
               ),
             ),
           ],
@@ -212,15 +207,11 @@ class _HomePageState extends State<HomePage>
                         context,
                         MaterialPageRoute(
                             builder: (context) => DetailCommendPage(
-                              restaurantID: globals.restaurantID,
-                            )),
+                                  restaurantID: globals.restaurantID,
+                                )),
                       );
-                    } else {
-
-                    }
-                  } else {
-
-                  }
+                    } else {}
+                  } else {}
                 }),
 
             new IconButton(
@@ -232,12 +223,8 @@ class _HomePageState extends State<HomePage>
                         context,
                         MaterialPageRoute(builder: (context) => null),
                       );
-                    } else {
-
-                    }
-                  } else {
-
-                  }
+                    } else {}
+                  } else {}
                 }),
 
             new IconButton(
@@ -256,7 +243,6 @@ class _HomePageState extends State<HomePage>
 //                    MaterialPageRoute(builder: (context) => Mapgoogle()),
 //                  );
 //                }),
-
           ],
         ),
       ),
@@ -264,8 +250,6 @@ class _HomePageState extends State<HomePage>
   }
 
   // ALL WIDGET
-
-
 
   List<detailFood> detailFoods = [];
 
@@ -284,7 +268,10 @@ class _HomePageState extends State<HomePage>
                       return new Text(
                         snapshot.data.data[0].restaurantName,
                         style: TextStyle(
-                            color: Colors.red, fontWeight: FontWeight.bold),
+                          color: Colors.red,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'kanit',
+                        ),
                       );
                     } else if (snapshot.hasError) {
                       return Text("${snapshot.error}");
@@ -390,16 +377,11 @@ class _HomePageState extends State<HomePage>
     );
   }
 
-
-
-  void _foo({String m_foodID,String m_foodName,String m_price}) async {
-
-
+  void _foo({String m_foodID, String m_foodName, String m_price}) async {
     foodID = int.parse(m_foodID);
     HaveData = await dbHelper.getByID(foodID);
 
     if (HaveData.length == 0) {
-
       foodsName = m_foodName;
       price = double.parse(m_price);
       size = "";
@@ -409,8 +391,8 @@ class _HomePageState extends State<HomePage>
       totalPrice = qty * price;
       taste = "";
 
-      Order e = Order(foodID, foodsName, price, size, description, images,
-          qty, totalPrice, taste, comment);
+      Order e = Order(foodID, foodsName, price, size, description, images, qty,
+          totalPrice, taste, comment);
 
       dbHelper.save(e);
       // showSnak();
@@ -420,7 +402,6 @@ class _HomePageState extends State<HomePage>
         MaterialPageRoute(builder: (context) => newOrder()),
       );
     } else {
-
       dbHelper.updateBySQL(foodsID: foodID);
       globals.restaurantID = widget.restaurantID;
       // showSnak();
@@ -430,90 +411,96 @@ class _HomePageState extends State<HomePage>
         MaterialPageRoute(builder: (context) => newOrder()),
       );
     }
-
-
-
-
-
   }
 
   Widget _ListSection({Menu menu}) => ListView.builder(
-    itemBuilder: (context, int idx) {
-      return Padding(
-        padding: EdgeInsets.symmetric(vertical: 16.0),
-        child: Column(
-          children: <Widget>[
-            Container(
-              child: new ListTile(
-                leading: Text(menu.data[idx].foodsTypeNameLevel2,
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.bold)),
-
-                // title: Text(menu.data[idx].foodsTypeNameLevel2),
-                trailing: Text(
-                  'ทั้งหมด (${menu.data[idx].foodsItems.length})',
-                  style: TextStyle(
-                      color: Colors.green,
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.bold),
-                ),
-              ),
-            ),
-            ListView.builder(
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 16.0,
-                    vertical: 8.0,
-                  ),
-                  child: ListTile(
-                    leading: Icon(Icons.fastfood,color: Colors.redAccent,size: 30.0,),
-                    title: Text(menu.data[idx].foodsItems[index].foodName),
-                    subtitle: Text(menu.data[idx].foodsItems[index].price.toString(),
-                    ),
-                    trailing: FlatButton(
-                        color: Colors.green,
-                        textColor: Colors.white,
-                        padding: EdgeInsets.fromLTRB(8.0,8.0,0.0,8.0),
-                        child: Text(menu.data[idx].foodsItems[index].price.toString() + " บาท",
-                          style: TextStyle(fontSize: 12.0),
-                        ),
-
-                        onPressed:() => _foo(m_foodID: menu.data[idx].foodsItems[index].foodID.toString(),
-                        m_foodName: menu.data[idx].foodsItems[index].foodName,
-                        m_price: menu.data[idx].foodsItems[index].price,
+        itemBuilder: (context, int idx) {
+          return Padding(
+            padding: EdgeInsets.symmetric(vertical: 16.0),
+            child: Column(
+              children: <Widget>[
+                Container(
+                  child: new ListTile(
+                    leading: Text(menu.data[idx].foodsTypeNameLevel2,
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Kanit',
                         )),
+
+                    // title: Text(menu.data[idx].foodsTypeNameLevel2),
+                    trailing: Text(
+                      'ทั้งหมด (${menu.data[idx].foodsItems.length})',
+                      style: TextStyle(
+                          color: Colors.green,
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Kanit'),
+                    ),
                   ),
-                );
-              },
-              itemCount: menu.data[idx].foodsItems.length,
-              shrinkWrap: true,
-              // todo comment this out and check the result
-              physics:
-              ClampingScrollPhysics(), // todo comment this out and check the result
-            )
-          ],
-        ),
+                ),
+                ListView.builder(
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 16.0,
+                        vertical: 8.0,
+                      ),
+                      child: ListTile(
+                        leading: Icon(
+                          Icons.fastfood,
+                          color: Colors.redAccent,
+                          size: 30.0,
+                        ),
+                        title: Text(
+                          menu.data[idx].foodsItems[index].foodName,
+                          style: TextStyle(fontFamily: 'Kanit'),
+                        ),
+                        subtitle: Text(
+                          menu.data[idx].foodsItems[index].price.toString(),
+                          style: TextStyle(
+                            fontFamily: 'Kanit',
+                          ),
+                        ),
+                        trailing: FlatButton(
+                            color: Colors.green,
+                            textColor: Colors.white,
+                            padding: EdgeInsets.fromLTRB(8.0, 8.0, 0.0, 8.0),
+                            child: Text(
+                              menu.data[idx].foodsItems[index].price
+                                      .toString() +
+                                  " บาท",
+                              style: TextStyle(
+                                fontSize: 12.0,
+                                fontFamily: 'Kanit',
+                              ),
+                            ),
+                            onPressed: () => _foo(
+                                  m_foodID: menu
+                                      .data[idx].foodsItems[index].foodID
+                                      .toString(),
+                                  m_foodName:
+                                      menu.data[idx].foodsItems[index].foodName,
+                                  m_price:
+                                      menu.data[idx].foodsItems[index].price,
+                                )),
+                      ),
+                    );
+                  },
+                  itemCount: menu.data[idx].foodsItems.length,
+                  shrinkWrap: true,
+                  // todo comment this out and check the result
+                  physics:
+                      ClampingScrollPhysics(), // todo comment this out and check the result
+                )
+              ],
+            ),
+          );
+        },
+        itemCount: menu.data.length,
       );
-
-
-
-
-
-
-
-    },
-    itemCount: menu.data.length,
-  );
-
 }
-
-
-
-
-
 
 class DataFeed {
   Restaurant feed;
