@@ -10,6 +10,7 @@ import 'package:emenu_covid/globals.dart' as globals;
 import 'package:emenu_covid/models/bill.dart';
 import 'package:emenu_covid/screens/home/DetailCommendPage.dart';
 import 'package:emenu_covid/models/logout.dart';
+import 'package:emenu_covid/screens/home/OrderHeader.dart';
 
 //String _restaurantID = globals.restaurantID;
 //String _tableID = globals.tableID;
@@ -413,7 +414,7 @@ class _ShowData extends State<MyOrder> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => TakeOutOrder()),
+                      MaterialPageRoute(builder: (context) => OrderHeader()),
                     );
                   },
                 ),
@@ -585,7 +586,7 @@ class _ShowData extends State<MyOrder> {
 
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => TakeOutOrder()),
+        MaterialPageRoute(builder: (context) => OrderHeader()),
       );
     } else {
       showSnak();

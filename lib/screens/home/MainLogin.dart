@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:emenu_covid/screens/home/webView.dart';
 import 'package:emenu_covid/screens/login/login.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:emenu_covid/globals.dart' as globals;
 
 void main() {
   runApp(new MaterialApp(home: new MainLogin()));
@@ -16,12 +18,21 @@ class MainLoginState extends State<MainLogin> {
   List<String> strings = ["Flutter", "Is", "Awesome"];
   String displayedString = "";
 
-  void onPressed() {
+  String _locationMessage = "";
+  void _getCurrentLocation() async {
+    final position = await Geolocator()
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    print(position);
+
     setState(() {
-      displayedString = strings[counter];
-      counter = counter < 2 ? counter + 1 : 0;
+      _locationMessage = "${position.latitude}, ${position.longitude}";
+      globals.latitude = "${position.latitude}";
+      globals.longtitude = "${position.longitude}";
     });
   }
+
+
+
 
   void gotoWebView() {
     Navigator.push(context,
@@ -35,6 +46,9 @@ class MainLoginState extends State<MainLogin> {
 
   @override
   Widget build(BuildContext context) {
+
+    _getCurrentLocation();
+
     return new Scaffold(
         appBar: new AppBar(
             title: new Text(

@@ -1,6 +1,5 @@
 import 'package:emenu_covid/screens/home/FirstPage2.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:emenu_covid/models/user.dart';
@@ -33,19 +32,7 @@ class _SignUpState extends State<Login> {
   AuthService authService = AuthService();
   RetLogin _letLogin;
 
-  String _locationMessage = "";
 
-  void _getCurrentLocation() async {
-    final position = await Geolocator()
-        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-    print(position);
-
-    setState(() {
-      _locationMessage = "${position.latitude}, ${position.longitude}";
-      globals.latitude = "${position.latitude}";
-      globals.longtitude = "${position.longitude}";
-    });
-  }
 
   static final TextEditingController _textEmail = TextEditingController();
 
@@ -131,7 +118,6 @@ class _SignUpState extends State<Login> {
       if (this._formKey.currentState.validate()) {
         _formKey.currentState.save();
         SharedPreferences _pref = await SharedPreferences.getInstance();
-        _getCurrentLocation();
         SendtoJsonLogin(email: email, password: password, type_: "N");
       }
     }

@@ -9,6 +9,8 @@ import 'package:emenu_covid/models/bill.dart';
 import 'package:emenu_covid/models/restaurant.dart';
 import 'package:emenu_covid/models/history.dart';
 import 'package:emenu_covid/models/logout.dart';
+import 'package:emenu_covid/models/orderHeader.dart';
+import 'package:emenu_covid/models/orderDetail.dart';
 import 'package:http/http.dart' as http;
 import 'package:emenu_covid/globals.dart' as globals;
 
@@ -29,7 +31,7 @@ class NetworkFoods {
         '{"restaurantID":"${RestaurantID}","recommend":"${Recommend}"}';
 
 
-    print(body);
+  //  print(body);
     var response = await http.post('$url',
         headers: {"Content-Type": "application/json"}, body: body);
     final jsonResponse = json.decode(response.body.toString());
@@ -46,7 +48,7 @@ class NetworkFoods {
     );
     final jsonResponse = json.decode(response.body.toString());
     Restaurant _restaurant = new Restaurant.fromJson(jsonResponse);
-    print(response.body.toString());
+ //   print(response.body.toString());
     return _restaurant;
   }
 
@@ -60,7 +62,7 @@ class NetworkFoods {
     );
     final jsonResponse = json.decode(response.body.toString());
     LogoutTable _logout = new LogoutTable.fromJson(jsonResponse);
-    print(response.body.toString());
+//    print(response.body.toString());
     return _logout;
   }
 
@@ -97,12 +99,12 @@ class NetworkFoods {
 //    final jsonResponse = json.decode(jsonPage);
 //    Menu _menu = new Menu.fromJson(jsonResponse);
 //    return _menu;
-    print(strBody);
+  //  print(strBody);
 
     String url = 'http://103.82.248.128/eMenuAPI/api/eMenu/getOrder';
     var response = await http.post('$url',
         headers: {"Content-Type": "application/json"}, body: strBody);
-    print(response.body.toString());
+   // print(response.body.toString());
 
     final jsonResponse = json.decode(response.body.toString());
     if (jsonResponse.toString().contains('false')) {}
@@ -111,6 +113,43 @@ class NetworkFoods {
     StatusOrder _statusOrder = new StatusOrder.fromJson(jsonResponse);
     return _statusOrder;
   }
+
+  static Future<ResultOrderHeader> loadOrderHeader(String strBody) async {
+
+    String url = 'http://103.82.248.128/eMenuAPI/api/eMenu/DelGetOrderHeaderByUserID';
+
+    print(strBody);
+    var response = await http.post('$url',
+        headers: {"Content-Type": "application/json"}, body: strBody);
+  // print(response.body.toString());
+
+    final jsonResponse = json.decode(response.body.toString());
+    if (jsonResponse.toString().contains('false')) {}
+
+//jsonResponse.
+    ResultOrderHeader _ResultOrderHeader = new ResultOrderHeader.fromJson(jsonResponse);
+    return _ResultOrderHeader;
+  }
+
+
+  static Future<ResultOrderDetail> loadOrderDetail(String strBody) async {
+
+    String url = 'http://103.82.248.128/eMenuAPI/api/eMenu/DelGetOrderDetail';
+
+    print(strBody);
+    var response = await http.post('$url',
+        headers: {"Content-Type": "application/json"}, body: strBody);
+    print(response.body.toString());
+
+    final jsonResponse = json.decode(response.body.toString());
+    if (jsonResponse.toString().contains('false')) {}
+
+    print(response.body.toString());
+
+    ResultOrderDetail _ResultOrderDetail = new ResultOrderDetail.fromJson(jsonResponse);
+    return _ResultOrderDetail;
+  }
+
 
 
 
