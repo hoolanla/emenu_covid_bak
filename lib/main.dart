@@ -1,6 +1,5 @@
 
 import 'package:flutter/material.dart';
-import 'package:emenu_covid/screens/home/mainLocation.dart';
 import 'package:emenu_covid/screens/login/login.dart';
 import 'package:emenu_covid/screens/home/MainLogin.dart';
 import 'package:emenu_covid/globals.dart';

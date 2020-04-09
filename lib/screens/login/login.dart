@@ -1,5 +1,4 @@
 import 'package:emenu_covid/screens/home/FirstPage2.dart';
-import 'package:emenu_covid/screens/home/mainLocation.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'dart:convert';
@@ -13,6 +12,7 @@ import 'package:emenu_covid/screens/Json/foods.dart';
 import 'package:emenu_covid/models/register.dart';
 import 'package:emenu_covid/globals.dart' as globals;
 import 'package:emenu_covid/screens/login/signup.dart';
+
 final User _user = new User();
 final String DISPLAYNAME = "displayName";
 final String IMAGEPATH = "imagePath";
@@ -21,8 +21,6 @@ final String USERID = "userid";
 final String TEL = "tel";
 final String LASTNAME = "lastname";
 final String IS_LOGIN = "is_login";
-
-
 
 void main() => runApp(Login());
 
@@ -35,21 +33,18 @@ class _SignUpState extends State<Login> {
   AuthService authService = AuthService();
   RetLogin _letLogin;
 
-
   String _locationMessage = "";
 
   void _getCurrentLocation() async {
-
-    final position = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    final position = await Geolocator()
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     print(position);
 
     setState(() {
       _locationMessage = "${position.latitude}, ${position.longitude}";
       globals.latitude = "${position.latitude}";
       globals.longtitude = "${position.longitude}";
-
     });
-
   }
 
   static final TextEditingController _textEmail = TextEditingController();
@@ -62,8 +57,6 @@ class _SignUpState extends State<Login> {
   bool _result = false;
   FocusNode passwordFocusNode = FocusNode();
 
-
-
   @override
   Widget build(BuildContext context) {
     void _showAlertDialog({String strError}) async {
@@ -73,13 +66,23 @@ class _SignUpState extends State<Login> {
           builder: (context) {
             return AlertDialog(
               title: Text(strError),
-              content: Text("Please try again."),
+              content: Text(
+                "Please try again.",
+                style: TextStyle(
+                  fontFamily: 'Kanit',
+                ),
+              ),
               actions: <Widget>[
                 FlatButton(
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: Text("OK"),
+                  child: Text(
+                    "OK",
+                    style: TextStyle(
+                      fontFamily: 'Kanit',
+                    ),
+                  ),
                 )
               ],
             );
@@ -87,7 +90,6 @@ class _SignUpState extends State<Login> {
     }
 
     void SendtoJsonLogin({String email, String password, String type_}) async {
-
       String strBody =
           '{"email":"${email}","password":"${password}","type":"${type_}"}';
       var feed = await NetworkFoods.login(strBody: strBody);
@@ -125,7 +127,6 @@ class _SignUpState extends State<Login> {
       } else {}
     }
 
-
     void _submit() async {
       if (this._formKey.currentState.validate()) {
         _formKey.currentState.save();
@@ -161,7 +162,7 @@ class _SignUpState extends State<Login> {
                         children: <Widget>[
                           Padding(
                             padding:
-                            const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
+                                const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
                             child: Material(
                               borderRadius: BorderRadius.circular(10.0),
                               color: Colors.grey.withOpacity(0.2),
@@ -172,7 +173,7 @@ class _SignUpState extends State<Login> {
                                   title: TextFormField(
                                     decoration: InputDecoration(
                                       border: InputBorder.none,
-                                      hintText: "Email",
+                                      hintText: 'Email',
                                       icon: Icon(Icons.alternate_email),
                                     ),
                                     validator: _validateEmail,
@@ -191,7 +192,7 @@ class _SignUpState extends State<Login> {
                           ),
                           Padding(
                             padding:
-                            const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
+                                const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
                             child: Material(
                               borderRadius: BorderRadius.circular(10.0),
                               color: Colors.grey.withOpacity(0.2),
@@ -227,7 +228,7 @@ class _SignUpState extends State<Login> {
                           ),
                           Padding(
                             padding:
-                            const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
+                                const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
                             child: Material(
                                 borderRadius: BorderRadius.circular(20.0),
                                 color: Colors.green,
@@ -239,9 +240,11 @@ class _SignUpState extends State<Login> {
                                     'Login',
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 20.0),
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20.0,
+
+                                    ),
                                   ),
                                 )),
                           ),
@@ -256,6 +259,7 @@ class _SignUpState extends State<Login> {
                                   style: TextStyle(
                                     color: Colors.black,
                                     fontWeight: FontWeight.w400,
+
                                   ),
                                 ),
                               ),
@@ -273,7 +277,10 @@ class _SignUpState extends State<Login> {
                                       child: Text(
                                         "Create an account",
                                         textAlign: TextAlign.center,
-                                        style: TextStyle(color: Colors.black),
+                                        style: TextStyle(
+                                          color: Colors.black,
+
+                                        ),
                                       ))),
                             ],
                           ),
@@ -286,14 +293,7 @@ class _SignUpState extends State<Login> {
                                   padding: const EdgeInsets.all(8.0),
                                   child: Divider(),
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    "Or",
-                                    style: TextStyle(
-                                        fontSize: 20, color: Colors.grey),
-                                  ),
-                                ),
+
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Divider(
@@ -303,39 +303,7 @@ class _SignUpState extends State<Login> {
                               ],
                             ),
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(
-                                    14.0, 8.0, 14.0, 8.0),
-                                child: Material(
-                                  child: MaterialButton(
-//                                    onPressed: () =>
-//                                        initiateFacebookLogin(context),
-                                    child: Image.asset(
-                                      "assets/images/fb.png",
-                                      width: 60,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(
-                                    14.0, 8.0, 14.0, 8.0),
-                                child: Material(
-                                    child: MaterialButton(
-                                        onPressed: () {},
-                                        // .then((FirebaseUser user) =>
-                                        //   print(user))
-                                        //  .catchError((e) => print(e)),
-                                        child: Image.asset(
-                                          "assets/images/ggg.png",
-                                          width: 60,
-                                        ))),
-                              ),
-                            ],
-                          ),
+
                         ],
                       )),
                 ),
@@ -376,8 +344,6 @@ class _SignUpState extends State<Login> {
     return null;
   }
 }
-
-
 
 bool isLoggedIn = false;
 

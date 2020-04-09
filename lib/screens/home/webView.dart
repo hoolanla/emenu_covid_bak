@@ -23,8 +23,6 @@ void main() {
   runApp(WebView_Flutter());
 }
 
-
-
 class WebView_Flutter extends StatefulWidget {
   const WebView_Flutter({Key key, this.title}) : super(key: key);
 
@@ -93,48 +91,48 @@ class _MyHomePageState extends State<WebView_Flutter> {
 
     _onProgressChanged =
         flutterWebViewPlugin.onProgressChanged.listen((double progress) {
-          if (mounted) {
-            setState(() {
-              _history.add('onProgressChanged: $progress');
-            });
-          }
+      if (mounted) {
+        setState(() {
+          _history.add('onProgressChanged: $progress');
         });
+      }
+    });
 
     _onScrollYChanged =
         flutterWebViewPlugin.onScrollYChanged.listen((double y) {
-          if (mounted) {
-            setState(() {
-              _history.add('Scroll in Y Direction: $y');
-            });
-          }
+      if (mounted) {
+        setState(() {
+          _history.add('Scroll in Y Direction: $y');
         });
+      }
+    });
 
     _onScrollXChanged =
         flutterWebViewPlugin.onScrollXChanged.listen((double x) {
-          if (mounted) {
-            setState(() {
-              _history.add('Scroll in X Direction: $x');
-            });
-          }
+      if (mounted) {
+        setState(() {
+          _history.add('Scroll in X Direction: $x');
         });
+      }
+    });
 
     _onStateChanged =
         flutterWebViewPlugin.onStateChanged.listen((WebViewStateChanged state) {
-          if (mounted) {
-            setState(() {
-              _history.add('onStateChanged: ${state.type} ${state.url}');
-            });
-          }
+      if (mounted) {
+        setState(() {
+          _history.add('onStateChanged: ${state.type} ${state.url}');
         });
+      }
+    });
 
     _onHttpError =
         flutterWebViewPlugin.onHttpError.listen((WebViewHttpError error) {
-          if (mounted) {
-            setState(() {
-              _history.add('onHttpError: ${error.code} ${error.url}');
-            });
-          }
+      if (mounted) {
+        setState(() {
+          _history.add('onHttpError: ${error.code} ${error.url}');
         });
+      }
+    });
   }
 
   @override
@@ -155,29 +153,39 @@ class _MyHomePageState extends State<WebView_Flutter> {
 
   @override
   Widget build(BuildContext context) {
-   return new MaterialApp(
+    return new MaterialApp(
       routes: {
         "/": (_) => new WebviewScaffold(
-          url: "http://103.82.248.128/eMenu/MemberLogin",
-          appBar: new AppBar(
-            title: new Text("Admin"),
-            actions: <Widget>[
-              IconButton(
-                icon: Icon(Icons.arrow_back_ios),
-                onPressed: (){flutterWebViewPlugin.goBack();},
+              url: "http://103.82.248.128/eMenu/MemberLogin",
+              appBar: new AppBar(
+                title: new Text(
+                  "Admin",
+                  style: TextStyle(
+                    fontFamily: 'Kanit',
+                  ),
+                ),
+                actions: <Widget>[
+                  IconButton(
+                    icon: Icon(Icons.arrow_back_ios),
+                    onPressed: () {
+                      flutterWebViewPlugin.goBack();
+                    },
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.arrow_forward_ios),
+                    onPressed: () {
+                      flutterWebViewPlugin.goForward();
+                    },
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.refresh),
+                    onPressed: () {
+                      flutterWebViewPlugin.reload();
+                    },
+                  ),
+                ],
               ),
-              IconButton(
-                icon: Icon(Icons.arrow_forward_ios),
-                onPressed: (){flutterWebViewPlugin.goForward();},
-              ),
-
-              IconButton(
-                icon: Icon(Icons.refresh),
-                onPressed: (){flutterWebViewPlugin.reload();},
-              ),
-            ],
-          ),
-        ),
+            ),
       },
     );
   }

@@ -11,6 +11,7 @@ import 'package:emenu_covid/models/restaurant.dart';
 import 'package:emenu_covid/models/logout.dart';
 import 'package:emenu_covid/screens/home/profile.dart';
 import 'package:emenu_covid/screens/home/DetailCommendPage.dart';
+
 //import 'package:json_serializable/json_serializable.dart';
 import 'dart:convert';
 
@@ -40,9 +41,6 @@ class FirstPage2 extends StatefulWidget {
 
 class _ShowData extends State<FirstPage2> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-
-
-
 
   @override
   void initState() {
@@ -130,8 +128,9 @@ class _ShowData extends State<FirstPage2> {
                         Text(
                           '${Mrestaurant.data[idx].restaurantName}',
                           style: TextStyle(
-                              color: Colors.red,
-                              fontWeight: FontWeight.bold,
+                              color: Colors.redAccent,
+                              fontFamily: 'Kanit',
+                              fontWeight: FontWeight.normal,
                               fontSize: 24.0,
                               letterSpacing: 1.1),
                         ),
@@ -139,6 +138,7 @@ class _ShowData extends State<FirstPage2> {
                           '${Mrestaurant.data[idx].content}',
                           style: TextStyle(
                               color: Colors.white,
+                              fontFamily: 'Kanit',
                               fontSize: 16.0,
                               letterSpacing: 1.1),
                         ),
@@ -148,28 +148,36 @@ class _ShowData extends State<FirstPage2> {
                           height: 28,
                           minWidth: 110,
                           child: FlatButton(
-                            color: Colors.green,
+                            color: Colors.deepOrange,
                             textColor: Colors.white,
                             disabledColor: Colors.grey,
                             disabledTextColor: Colors.black,
                             padding: EdgeInsets.all(5.0),
-                            splashColor: Colors.green,
+                            splashColor: Colors.deepOrange,
                             shape: new RoundedRectangleBorder(
                               borderRadius: new BorderRadius.circular(30.0),
                             ),
                             onPressed: () {
+
+                              globals.restaurantID = Mrestaurant.data[idx].restaurantID;
+                              globals.restaurantName = Mrestaurant.data[idx].restaurantName;
+
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => DetailCommendPage(
-                                    restaurantID: Mrestaurant.data[idx].restaurantID,
+                                    restaurantID:
+                                        Mrestaurant.data[idx].restaurantID,
                                   ),
                                 ),
                               );
                             },
                             child: Text(
                               "รายละเอียด",
-                              style: TextStyle(fontSize: 14.0),
+                              style: TextStyle(
+                                fontSize: 14.0,
+                                fontFamily: 'Kanit',
+                              ),
                             ),
                           ),
                         )
@@ -184,23 +192,19 @@ class _ShowData extends State<FirstPage2> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-
       appBar: new AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.green,
         title: new Text(
-          'เทสต์ฟอนท์',
+          'COVID FOOD',
           textAlign: TextAlign.center,
           style: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            fontWeight: FontWeight.normal,
             fontSize: 20.0,
             fontFamily: 'Kanit',
-
           ),
         ),
-
       ),
-
       bottomNavigationBar: new BottomAppBar(
         child: new Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -223,8 +227,7 @@ class _ShowData extends State<FirstPage2> {
                     if (globals.restaurantID != '') {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                            builder: (context) => null),
+                        MaterialPageRoute(builder: (context) => null),
                       );
                     }
                   }
@@ -296,7 +299,6 @@ class _ShowData extends State<FirstPage2> {
       var feed = await NetworkFoods.loadLogout(strBody);
       var data = DataFeedLogout(feed: feed);
       if (data.feed.ResultOk == "false") {
-
       } else {
         globals.tableID = '';
         globals.tableName = '';
@@ -320,5 +322,6 @@ class _ShowData extends State<FirstPage2> {
 
 class DataFeedLogout {
   LogoutTable feed;
+
   DataFeedLogout({this.feed});
 }

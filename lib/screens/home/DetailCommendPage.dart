@@ -6,14 +6,13 @@ import 'package:emenu_covid/screens/home/FirstPage2.dart';
 import 'package:emenu_covid/globals.dart' as globals;
 import 'package:emenu_covid/models/restaurant.dart';
 import 'package:emenu_covid/sqlite/db_helper.dart';
-import 'package:emenu_covid/screens/home/newOrder.dart';
+import 'package:emenu_covid/screens/home/MyOrder.dart';
 import 'package:emenu_covid/globals.dart';
 
 String _mImage;
 String _mRestaurantName;
 Future<Menu> _menuPage1;
 Future<Restaurant> _rest;
-
 void main() {
   runApp(DetailCommendPage());
 }
@@ -143,41 +142,47 @@ class _HomePageState extends State<HomePage>
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.green,
         title: Text(
-          'COVID FOOD',
+          globals.restaurantName,
           textAlign: TextAlign.center,
           style: TextStyle(
-            color: Colors.black,
+            color: Colors.white,
             fontSize: 20.0,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.normal,
             fontFamily: 'Kanit',
           ),
         ),
-        bottom: TabBar(
-          indicator: UnderlineTabIndicator(
-            borderSide: BorderSide(width: 1.0),
-            insets: EdgeInsets.only(left: 0.0, right: 8.0, bottom: 4.0),
-          ),
-          //  isScrollable: true,
-          labelPadding: EdgeInsets.only(left: 0, right: 0),
-
-          tabs: [
-            Padding(
-              padding: const EdgeInsets.only(right: 0),
-              child: new Tab(
-                child: Text(
-                  'รายการอาหาร',
-                  style: TextStyle(color: Colors.black, fontFamily: 'Kanit'),
-                ),
-              ),
-            ),
-          ],
-          controller: _tabController,
-//          indicatorColor: Colors.white,
-//          indicatorSize: TabBarIndicatorSize.tab,
-        ),
-        bottomOpacity: 1,
+//        bottom: TabBar(
+//          indicator: UnderlineTabIndicator(
+//            borderSide: BorderSide(width: 1.0),
+//            insets: EdgeInsets.only(left: 0.0, right: 8.0, bottom: 4.0),
+//          ),
+//          //  isScrollable: true,
+//          labelPadding: EdgeInsets.only(left: 0, right: 0),
+//
+//          tabs: [
+//            Padding(
+//              padding: const EdgeInsets.only(right: 0),
+//
+//              child: new Tab(
+//
+//                child: Text(
+//                  'รายการอาหาร',
+//                  style: TextStyle(
+//                    color: Colors.white,
+//                    fontFamily: 'Kanit',
+//                  ),
+//
+//                ),
+//              ),
+//            ),
+//          ],
+//          controller: _tabController,
+////          indicatorColor: Colors.white,
+////          indicatorSize: TabBarIndicatorSize.tab,
+//        ),
+//        bottomOpacity: 1,
       ),
       body: TabBarView(
         children: [Page1()],
@@ -256,78 +261,78 @@ class _HomePageState extends State<HomePage>
   Widget Page1() {
     return CustomScrollView(
       slivers: <Widget>[
-        SliverAppBar(
-          expandedHeight: 100,
-          pinned: true,
-          floating: false,
-          flexibleSpace: new FlexibleSpaceBar(
-              title: FutureBuilder<Restaurant>(
-                  future: _rest,
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return new Text(
-                        snapshot.data.data[0].restaurantName,
-                        style: TextStyle(
-                          color: Colors.red,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'kanit',
-                        ),
-                      );
-                    } else if (snapshot.hasError) {
-                      return Text("${snapshot.error}");
-                    }
-                    return Container(
-                      child: Center(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            SizedBox(
-                              child: CircularProgressIndicator(),
-                              height: 10.0,
-                              width: 10.0,
-                            )
-                          ],
-                        ),
-                      ),
-                    );
-                  }),
-              background: Container(
-                height: 100.0,
-                width: 420.0,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                      colors: [Colors.black.withOpacity(0.1), Colors.black],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter),
-                ),
-                child: FutureBuilder<Restaurant>(
-                    future: _rest,
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        return new Image.network(
-                          snapshot.data.data[0].images,
-                          fit: BoxFit.cover,
-                        );
-                      } else if (snapshot.hasError) {
-                        return Text("${snapshot.error}");
-                      }
-                      return Container(
-                        child: Center(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              SizedBox(
-                                child: CircularProgressIndicator(),
-                                height: 10.0,
-                                width: 10.0,
-                              )
-                            ],
-                          ),
-                        ),
-                      );
-                    }),
-              )),
-        ),
+//        SliverAppBar(
+//          expandedHeight: 100,
+//          pinned: true,
+//          floating: false,
+//          flexibleSpace: new FlexibleSpaceBar(
+//              title: FutureBuilder<Restaurant>(
+//                  future: _rest,
+//                  builder: (context, snapshot) {
+//                    if (snapshot.hasData) {
+//                      return new Text(
+//                        snapshot.data.data[0].restaurantName,
+//                        style: TextStyle(
+//                          color: Colors.red,
+//                          fontWeight: FontWeight.normal,
+//                          fontFamily: 'kanit',
+//                        ),
+//                      );
+//                    } else if (snapshot.hasError) {
+//                      return Text("${snapshot.error}");
+//                    }
+//                    return Container(
+//                      child: Center(
+//                        child: Column(
+//                          crossAxisAlignment: CrossAxisAlignment.center,
+//                          children: <Widget>[
+//                            SizedBox(
+//                              child: CircularProgressIndicator(),
+//                              height: 10.0,
+//                              width: 10.0,
+//                            )
+//                          ],
+//                        ),
+//                      ),
+//                    );
+//                  }),
+//              background: Container(
+//                height: 100.0,
+//                width: 420.0,
+//                decoration: BoxDecoration(
+//                  gradient: LinearGradient(
+//                      colors: [Colors.black.withOpacity(0.1), Colors.black],
+//                      begin: Alignment.topCenter,
+//                      end: Alignment.bottomCenter),
+//                ),
+//                child: FutureBuilder<Restaurant>(
+//                    future: _rest,
+//                    builder: (context, snapshot) {
+//                      if (snapshot.hasData) {
+//                        return new Image.network(
+//                          snapshot.data.data[0].images,
+//                          fit: BoxFit.cover,
+//                        );
+//                      } else if (snapshot.hasError) {
+//                        return Text("${snapshot.error}");
+//                      }
+//                      return Container(
+//                        child: Center(
+//                          child: Column(
+//                            crossAxisAlignment: CrossAxisAlignment.center,
+//                            children: <Widget>[
+//                              SizedBox(
+//                                child: CircularProgressIndicator(),
+//                                height: 10.0,
+//                                width: 10.0,
+//                              )
+//                            ],
+//                          ),
+//                        ),
+//                      );
+//                    }),
+//              )),
+//        ),
         SliverFillRemaining(
           child: FutureBuilder<Menu>(
               future: _menuPage1,
@@ -399,7 +404,7 @@ class _HomePageState extends State<HomePage>
       globals.restaurantID = widget.restaurantID;
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => newOrder()),
+        MaterialPageRoute(builder: (context) => MyOrder()),
       );
     } else {
       dbHelper.updateBySQL(foodsID: foodID);
@@ -408,7 +413,7 @@ class _HomePageState extends State<HomePage>
 
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => newOrder()),
+        MaterialPageRoute(builder: (context) => MyOrder()),
       );
     }
   }
@@ -423,7 +428,7 @@ class _HomePageState extends State<HomePage>
                   child: new ListTile(
                     leading: Text(menu.data[idx].foodsTypeNameLevel2,
                         style: TextStyle(
-                          color: Colors.black,
+                          color: Colors.grey[500],
                           fontSize: 16.0,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'Kanit',
@@ -433,7 +438,7 @@ class _HomePageState extends State<HomePage>
                     trailing: Text(
                       'ทั้งหมด (${menu.data[idx].foodsItems.length})',
                       style: TextStyle(
-                          color: Colors.green,
+                          color: Colors.grey[500],
                           fontSize: 16.0,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'Kanit'),
@@ -447,45 +452,55 @@ class _HomePageState extends State<HomePage>
                         horizontal: 16.0,
                         vertical: 8.0,
                       ),
-                      child: ListTile(
-                        leading: Icon(
-                          Icons.fastfood,
-                          color: Colors.redAccent,
-                          size: 30.0,
-                        ),
-                        title: Text(
-                          menu.data[idx].foodsItems[index].foodName,
-                          style: TextStyle(fontFamily: 'Kanit'),
-                        ),
-                        subtitle: Text(
-                          menu.data[idx].foodsItems[index].price.toString(),
-                          style: TextStyle(
-                            fontFamily: 'Kanit',
+                      child: new Container(
+                        child:      ListTile(
+                          leading: Icon(
+                            Icons.fastfood,
+                            color: Colors.redAccent,
+                            size: 20.0,
                           ),
-                        ),
-                        trailing: FlatButton(
-                            color: Colors.green,
-                            textColor: Colors.white,
-                            padding: EdgeInsets.fromLTRB(8.0, 8.0, 0.0, 8.0),
-                            child: Text(
-                              menu.data[idx].foodsItems[index].price
-                                      .toString() +
-                                  " บาท",
-                              style: TextStyle(
-                                fontSize: 12.0,
-                                fontFamily: 'Kanit',
-                              ),
+                          title: Text(
+                            menu.data[idx].foodsItems[index].foodName,
+                            style: TextStyle(fontFamily: 'Kanit'),
+                          ),
+                          subtitle: Text(
+                            menu.data[idx].foodsItems[index].price.toString(),
+                            style: TextStyle(
+                              fontFamily: 'Kanit',
                             ),
-                            onPressed: () => _foo(
-                                  m_foodID: menu
-                                      .data[idx].foodsItems[index].foodID
-                                      .toString(),
-                                  m_foodName:
-                                      menu.data[idx].foodsItems[index].foodName,
-                                  m_price:
-                                      menu.data[idx].foodsItems[index].price,
-                                )),
-                      ),
+                          ),
+                          trailing: FlatButton(
+                              color: Colors.deepOrange,
+                              textColor: Colors.white,
+                              padding: EdgeInsets.fromLTRB(8.0, 8.0, 0.0, 8.0),
+                              child: Text(
+                                menu.data[idx].foodsItems[index].price
+                                    .toString() +
+                                    " บาท",
+                                style: TextStyle(
+                                  fontSize: 12.0,
+                                  fontFamily: 'Kanit',
+                                ),
+                              ),
+                              onPressed: () => _foo(
+                                m_foodID: menu
+                                    .data[idx].foodsItems[index].foodID
+                                    .toString(),
+                                m_foodName:
+                                menu.data[idx].foodsItems[index].foodName,
+                                m_price:
+                                menu.data[idx].foodsItems[index].price,
+                              )),
+                        ),
+                        decoration: new BoxDecoration(
+                            border: Border(
+                                bottom: new BorderSide(
+                                  color: Colors.grey[350],
+                                  width: 0.5,
+                                  style: BorderStyle.solid,
+                                ))),
+                      )
+
                     );
                   },
                   itemCount: menu.data[idx].foodsItems.length,
