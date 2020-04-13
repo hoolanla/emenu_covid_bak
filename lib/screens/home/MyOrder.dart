@@ -1,9 +1,10 @@
+import 'dart:io';
+
 import 'package:emenu_covid/screens/home/TakeOutOrder.dart';
 import 'package:flutter/material.dart';
 import 'package:emenu_covid/models/order.dart';
 import 'dart:async';
-import 'package:emenu_covid/screens/home/FirstPage2.dart';
-import 'package:emenu_covid/screens/home/status_order.dart';
+import 'package:emenu_covid/screens/home/FirstPage.dart';
 import 'package:emenu_covid/screens/Json/foods.dart';
 import 'package:emenu_covid/sqlite/db_helper.dart';
 import 'package:emenu_covid/globals.dart' as globals;
@@ -11,6 +12,8 @@ import 'package:emenu_covid/models/bill.dart';
 import 'package:emenu_covid/screens/home/DetailCommendPage.dart';
 import 'package:emenu_covid/models/logout.dart';
 import 'package:emenu_covid/screens/home/OrderHeader.dart';
+import 'package:flutter/services.dart';
+import 'package:emenu_covid/services/AlertForm.dart';
 
 //String _restaurantID = globals.restaurantID;
 //String _tableID = globals.tableID;
@@ -91,13 +94,6 @@ class _ShowData extends State<MyOrder> {
     refreshJsonBody();
   }
 
-  showSnak() {
-    _scaffoldKey.currentState.showSnackBar(SnackBar(
-      content: Text("ไม่สามารถสั่งได้ กำลงัเคลียร์โต๊ะ"),
-      backgroundColor: Colors.deepOrange,
-      duration: Duration(seconds: 2),
-    ));
-  }
 
   refreshList() {
     setState(() {
@@ -160,7 +156,29 @@ class _ShowData extends State<MyOrder> {
         });
   }
 
+  Widget HeaderColumn() {
+    return new Container(
+      height: 30,
+      child: new ListTile(
+        onTap: null,
+        title: Row(children: <Widget>[
+          new Expanded(
+              child: new Text(
+                "รายการ",
+                style: TextStyle(
+                  fontFamily: 'Kanit',
+                  color: Colors.grey,
+                  fontWeight: FontWeight.bold,
+                ),
+              )),
+        ]),
+      ),
+    );
+  }
+
   Widget _noOrder() {
+
+    globals.hasMyOrder = "0";
     return new Card(
       child: Padding(
         padding: EdgeInsets.all(2.0),
@@ -193,7 +211,8 @@ class _ShowData extends State<MyOrder> {
               if (snapshot.data.length == 0) {
                 return _noOrder();
               } else {
-                return new Container(
+ globals.hasMyOrder = "1";
+           return new Container(
                   child: _ListSection(orders: snapshot.data),
                 );
               }
@@ -271,7 +290,7 @@ class _ShowData extends State<MyOrder> {
                           Padding(
                             padding: const EdgeInsets.all(0.0),
                             child: Text(
-                              'ราคา:',
+                              'ราคา: ',
                               style: TextStyle(
                                 fontFamily: 'Kanit',
                               ),
@@ -280,7 +299,7 @@ class _ShowData extends State<MyOrder> {
                           Padding(
                             padding: const EdgeInsets.all(0.0),
                             child: Text(
-                              orders[idx].price.toString(),
+                              orders[idx].price.toString().replaceAll('.0', ''),
                               style: TextStyle(
                                 color: Colors.green,
                                 fontFamily: 'Kanit',
@@ -291,7 +310,7 @@ class _ShowData extends State<MyOrder> {
                             padding:
                                 const EdgeInsets.fromLTRB(20.0, 8.0, 8.0, 8.0),
                             child: Text(
-                              'รวม:',
+                              'รวม: ',
                               style: TextStyle(
                                 fontFamily: 'Kanit',
                               ),
@@ -300,7 +319,7 @@ class _ShowData extends State<MyOrder> {
                           Padding(
                             padding: const EdgeInsets.all(0.0),
                             child: Text(
-                              orders[idx].totalPrice.toString(),
+                              orders[idx].totalPrice.toString().replaceAll('.0', ''),
                               style: TextStyle(
                                 color: Colors.green,
                                 fontFamily: 'Kanit',
@@ -389,12 +408,13 @@ class _ShowData extends State<MyOrder> {
           ),
         ),
       ),
-      body: new Container(
+      body: new  Container(
         child: new Column(
           mainAxisAlignment: MainAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           verticalDirection: VerticalDirection.down,
           children: <Widget>[
+
             list(),
             Row(children: <Widget>[
               Expanded(
@@ -404,7 +424,7 @@ class _ShowData extends State<MyOrder> {
                       future: _totals,
                       builder: (context, snapshot) {
                         return Text(
-                          'Total  ${snapshot.data}',
+                          'รวมราคา  ${snapshot.data.toString().replaceAll('.0', '')}  บาท',
                           style: TextStyle(
                             color: Colors.black,
                             fontFamily: 'Kanit',
@@ -451,33 +471,84 @@ class _ShowData extends State<MyOrder> {
           ],
         ),
       ),
+      bottomNavigationBar: new BottomAppBar(
+        child: new Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisSize: MainAxisSize.max,
+          children: <Widget>[
+            new IconButton(
+                icon: new Icon(Icons.home),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => FirstPage()),
+                  );
+                }),
+            //   new IconButton(icon: new Text('SAVE'), onPressed: null),
+
+            new IconButton(
+                icon: new Icon(Icons.restaurant),
+                onPressed: () {
+                  if (globals.restaurantID != null) {
+                    if (globals.restaurantID != '') {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => DetailCommendPage(
+                              restaurantID: globals.restaurantID,
+                            )),
+                      );
+                    } else {}
+                  } else {}
+                }),
+
+            new IconButton(
+                icon: new Icon(Icons.add_shopping_cart),
+                onPressed: () {
+                  if (globals.restaurantID != null) {
+                    if (globals.restaurantID != '') {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => MyOrder()),
+                      );
+                    } else {}
+                  } else {}
+                }),
+
+            new IconButton(
+                icon: new Icon(Icons.list),
+                onPressed: () {
+                  if (globals.restaurantID != null) {
+                    if (globals.restaurantID != '') {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => OrderHeader()),
+                      );
+                    } else {}
+                  } else {}
+                }),
+
+            new IconButton(
+                icon: new Icon(Icons.exit_to_app),
+                onPressed: (){
+                  showAlert(context);
+                }),
+
+          ],
+        ),
+      ),
     );
   }
 
-  void _LogOut() async {
-    if (globals.tableID != null && globals.tableID != '') {
-      String strBody =
-          '{"userID":"${globals.userID}","tableID":"${globals.tableID}"}';
-      var feed = await NetworkFoods.loadLogout(strBody);
-      var data = DataFeedLogout(feed: feed);
-      if (data.feed.ResultOk == "false") {
-        _showAlertLogout(data.feed.ErrorMessage);
-      } else {
-        globals.tableID = '';
-        globals.restaurantID = '';
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => FirstPage2()),
-        );
-      }
-    } else {
-      globals.tableID = '';
-      globals.restaurantID = '';
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => FirstPage2()),
-      );
-    }
+  void _LogOut() {
+      globals.restaurantID = "0";
+      globals.hasMyOrder = "0";
+      SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+//      Navigator.push(
+//        context,
+//        MaterialPageRoute(builder: (context) => FirstPage()),
+    
+
   }
 
   void _dialogResult(String str) {
@@ -574,12 +645,11 @@ class _ShowData extends State<MyOrder> {
   }
 
   void ttt(String strAll) async {
-    print('================> ' + strAll);
-
     var feed = await NetworkFoods.inSertOrder(strBody: strAll);
     var data = DataFeed(feed: feed);
     if (data.feed.ResultOk.toString() == "true") {
       dbHelper.deleteAll();
+      globals.hasMyOrder = "0";
       refreshList();
       refreshTotal();
       refreshJsonBody();
@@ -589,7 +659,7 @@ class _ShowData extends State<MyOrder> {
         MaterialPageRoute(builder: (context) => OrderHeader()),
       );
     } else {
-      showSnak();
+    //  showSnak();
     }
   }
 }

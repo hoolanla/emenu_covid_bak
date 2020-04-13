@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:emenu_covid/models/order.dart';
 import 'dart:async';
-import 'package:emenu_covid/screens/home/FirstPage2.dart';
-import 'package:emenu_covid/screens/home/status_order.dart';
+import 'package:emenu_covid/screens/home/FirstPage.dart';
 import 'package:emenu_covid/screens/Json/foods.dart';
 import 'package:emenu_covid/sqlite/db_helper.dart';
 import 'package:emenu_covid/globals.dart' as globals;
 import 'package:emenu_covid/models/bill.dart';
 import 'package:emenu_covid/screens/home/DetailCommendPage.dart';
 import 'package:emenu_covid/models/logout.dart';
+import 'package:emenu_covid/services/AlertForm.dart';
 
 //String _restaurantID = globals.restaurantID;
 //String _tableID = globals.tableID;
@@ -265,7 +265,7 @@ class _ShowData extends State<newOrder> {
                     )
                   ],
                 ),
-                trailing: changeIcon(status: menu.orderList[idx].status),
+             //   trailing: changeIcon(status: menu.orderList[idx].status),
               ),
             ),
           ],
@@ -656,7 +656,7 @@ class _ShowData extends State<newOrder> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => FirstPage2()),
+                      MaterialPageRoute(builder: (context) => FirstPage()),
                     );
                   }),
               //   new IconButton(icon: new Text('SAVE'), onPressed: null),
@@ -761,7 +761,7 @@ class _ShowData extends State<newOrder> {
         globals.restaurantID = '';
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => FirstPage2()),
+          MaterialPageRoute(builder: (context) => FirstPage()),
         );
       }
     } else {
@@ -769,7 +769,7 @@ class _ShowData extends State<newOrder> {
       globals.restaurantID = '';
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => FirstPage2()),
+        MaterialPageRoute(builder: (context) => FirstPage()),
       );
     }
   }

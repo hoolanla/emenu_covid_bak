@@ -2,14 +2,16 @@ import 'package:emenu_covid/models/orderDetail.dart';
 import 'package:flutter/material.dart';
 import 'package:emenu_covid/models/order.dart';
 import 'dart:async';
-import 'package:emenu_covid/screens/home/FirstPage2.dart';
-import 'package:emenu_covid/screens/home/status_order.dart';
+import 'package:emenu_covid/screens/home/FirstPage.dart';
+import 'package:emenu_covid/screens/home/OrderHeader.dart';
+import 'package:emenu_covid/screens/home/MyOrder.dart';
 import 'package:emenu_covid/screens/Json/foods.dart';
 import 'package:emenu_covid/sqlite/db_helper.dart';
 import 'package:emenu_covid/globals.dart' as globals;
 import 'package:emenu_covid/models/bill.dart';
 import 'package:emenu_covid/screens/home/DetailCommendPage.dart';
 import 'package:emenu_covid/models/logout.dart';
+import 'package:emenu_covid/services/AlertForm.dart';
 
 //String _restaurantID = globals.restaurantID;
 //String _tableID = globals.tableID;
@@ -42,11 +44,10 @@ void main() {
 }
 
 class OrderDetail extends StatefulWidget {
+  final String orderID;
+  final String restaurantID;
 
-final String orderID;
-final String restaurantID;
-
-OrderDetail({this.orderID,this.restaurantID});
+  OrderDetail({this.orderID, this.restaurantID});
 
   @override
   State<StatefulWidget> createState() {
@@ -93,8 +94,7 @@ class _ShowData extends State<OrderDetail> {
     dbHelper = DatabaseHelper();
 
     refreshOrderDetail();
-  //  refreshJsonBody();
-    //  refreshTotalCheckbill();
+     refreshTotalDetail();
   }
 
   showSnak() {
@@ -106,13 +106,22 @@ class _ShowData extends State<OrderDetail> {
   }
 
   refreshOrderDetail() {
-    String  strBody = '{"orderNo":"${widget.orderID}","restaurantID":"${widget.restaurantID}"}';
+    String strBody =
+        '{"orderNo":"${widget.orderID}","restaurantID":"${widget.restaurantID}"}';
     setState(() {
-
       resultOrderDetail = NetworkFoods.loadOrderDetail(strBody);
     });
   }
 
+  refreshTotalDetail() {
+
+    String strBody =
+        '{"orderNo":"${widget.orderID}","restaurantID":"${widget.restaurantID}"}';
+    setState(() {
+      _totals = NetworkFoods.loadTotalOrderDetail(strBody);
+
+    });
+  }
 
   refreshJsonBody() {
     setState(() {
@@ -122,47 +131,54 @@ class _ShowData extends State<OrderDetail> {
 
   //CODE HERE
 
-
   Widget _ListSectionStatus({ResultOrderDetail menu}) => ListView.builder(
-    itemBuilder: (context, int idx) {
-      return Padding(
-        padding: EdgeInsets.symmetric(vertical: 16.0),
-        child: Column(
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: 8.0,
-                vertical: 1.0,
-              ),
-              child: Container(
-                child: new ListTile(
-                  leading: Icon(
-                    Icons.fastfood,
-                    size: 20,
-                    color: Colors.redAccent,
+        itemBuilder: (context, int idx) {
+          return Padding(
+            padding: EdgeInsets.symmetric(vertical: 16.0),
+            child: Column(
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 8.0,
+                    vertical: 1.0,
                   ),
-                  title: Text(
-                        menu.orderList[idx].foodsName
-                            .toString() +
-                        '    จำนวน: ' +
-                        menu.orderList[idx].qty.toString(),
-                    style: TextStyle(
-                      fontFamily: 'Kanit',
-                    ),
-                  ),
-                  subtitle: new Column(
-                    children: <Widget>[
-                      new Row(
-                        children: <Widget>[
-                          Text(
-                            'รวมราคา: ' +
-                                menu.orderList[idx].qty.toString(),
-                            style: TextStyle(
-                              fontFamily: 'Kanit',
-                            ),
-                          )
-                        ],
+                  child: Container(
+                    child: new ListTile(
+                      leading: Icon(
+                        Icons.fastfood,
+                        size: 20,
+                        color: Colors.redAccent,
                       ),
+                      title: Text(
+                        menu.orderList[idx].foodsName.toString(),
+                        style: TextStyle(
+                          fontFamily: 'Kanit',
+                        ),
+                      ),
+                      subtitle: new Column(
+                        children: <Widget>[
+                          new Row(
+                            children: <Widget>[
+                              Text(
+                                menu.orderList[idx].qty.toString() + 'x',
+                                style: TextStyle(
+                                  fontFamily: 'Kanit',
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              Text(
+                                '   ราคา: ' +
+                                    menu.orderList[idx].price.toString() +
+                                    ' บาท',
+                                style: TextStyle(
+                                  fontFamily: 'Kanit',
+                                  fontWeight: FontWeight.normal,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ],
+                          ),
 //                          new Row(
 //                            children: <Widget>[
 //                              Padding(
@@ -189,32 +205,32 @@ class _ShowData extends State<OrderDetail> {
 //                              ),
 //                            ],
 //                          )
-                    ],
-                  ),
-                  trailing: Text(
-                    menu.orderList[idx].totalPrice.toString(),
-                    style: TextStyle(
-                      fontFamily: 'Kanit',
+                        ],
+                      ),
+                      trailing: Text(
+                        menu.orderList[idx].totalPrice.toString(),
+                        style: TextStyle(
+                          fontFamily: 'Kanit',
+                        ),
+                      ),
+                    ),
+                    decoration: new BoxDecoration(
+                      border: Border(
+                        bottom: new BorderSide(
+                          color: Colors.grey[350],
+                          width: 0.5,
+                          style: BorderStyle.solid,
+                        ),
+                      ),
                     ),
                   ),
-                ),
-                decoration: new BoxDecoration(
-                  border: Border(
-                    bottom: new BorderSide(
-                      color: Colors.grey[350],
-                      width: 0.5,
-                      style: BorderStyle.solid,
-                    ),
-                  ),
-                ),
-              ),
-            )
-          ],
-        ),
+                )
+              ],
+            ),
+          );
+        },
+        itemCount: menu.orderList.length,
       );
-    },
-    itemCount: menu.orderList.length,
-  );
 
   Widget _noOrder() {
     return new Card(
@@ -224,7 +240,7 @@ class _ShowData extends State<OrderDetail> {
 //      ),
 //      elevation: 5,
 //      margin: EdgeInsets.all(10),
-    );
+        );
   }
 
   headerListOrder() {
@@ -315,7 +331,7 @@ class _ShowData extends State<OrderDetail> {
         ),
         backgroundColor: Colors.green,
         title: new Text(
-          'รายการอาหารที่สั่ง',
+          'รายละเอียด',
           textAlign: TextAlign.center,
           style: TextStyle(
             color: Colors.white,
@@ -331,8 +347,120 @@ class _ShowData extends State<OrderDetail> {
           mainAxisSize: MainAxisSize.min,
           verticalDirection: VerticalDirection.down,
           children: <Widget>[
+            HeaderColumn(),
             listStatusOrder(),
+            Row(children: <Widget>[
+              Expanded(
+                child: new RaisedButton(
+                  color: Colors.white,
+                  child: FutureBuilder(
+                      future: _totals,
+                      builder: (context, snapshot) {
+                        return Text(
+                          'รวมราคา  ${snapshot.data.toString().replaceAll('.0', '')} บาท',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontFamily: 'Kanit',
+                          ),
+                        );
+                      }),
+                  onPressed: () {},
+                ),
+              ),
+            ])
           ],
+        ),
+      ),
+      bottomNavigationBar: new BottomAppBar(
+        child: new Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisSize: MainAxisSize.max,
+          children: <Widget>[
+            new IconButton(
+                icon: new Icon(Icons.home),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => FirstPage()),
+                  );
+                }),
+            //   new IconButton(icon: new Text('SAVE'), onPressed: null),
+
+            new IconButton(
+                icon: new Icon(Icons.restaurant),
+                onPressed: () {
+                  if (globals.restaurantID != null) {
+                    if (globals.restaurantID != '') {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => DetailCommendPage(
+                                  restaurantID: globals.restaurantID,
+                                )),
+                      );
+                    } else {}
+                  } else {}
+                }),
+
+            new IconButton(
+                icon: new Icon(Icons.add_shopping_cart),
+                onPressed: () {
+                  if (globals.restaurantID != null) {
+                    if (globals.restaurantID != '') {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => MyOrder()),
+                      );
+                    } else {}
+                  } else {}
+                }),
+
+            new IconButton(
+                icon: new Icon(Icons.list),
+                onPressed: () {
+                  if (globals.restaurantID != null) {
+                    if (globals.restaurantID != '') {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => OrderHeader()),
+                      );
+                    } else {}
+                  } else {}
+                }),
+
+            new IconButton(icon: new Icon(Icons.exit_to_app), onPressed: () {
+              showAlert(context);
+            //  SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+            }),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget HeaderColumn() {
+    return new Container(
+      height: 30,
+      child: new ListTile(
+        onTap: null,
+        title: Row(children: <Widget>[
+          new Expanded(
+              child: new Text(
+            "รายการ",
+            style: TextStyle(
+              fontFamily: 'Kanit',
+              color: Colors.grey,
+              fontWeight: FontWeight.bold,
+            ),
+          )),
+        ]),
+        trailing: Text(
+          'ราคา ',
+          style: TextStyle(
+            fontFamily: 'Kanit',
+            color: Colors.grey,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
     );
@@ -345,13 +473,13 @@ class _ShowData extends State<OrderDetail> {
       var feed = await NetworkFoods.loadLogout(strBody);
       var data = DataFeedLogout(feed: feed);
       if (data.feed.ResultOk == "false") {
-     //   _showAlertLogout(data.feed.ErrorMessage);
+        //   _showAlertLogout(data.feed.ErrorMessage);
       } else {
         globals.tableID = '';
         globals.restaurantID = '';
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => FirstPage2()),
+          MaterialPageRoute(builder: (context) => FirstPage()),
         );
       }
     } else {
@@ -359,7 +487,7 @@ class _ShowData extends State<OrderDetail> {
       globals.restaurantID = '';
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => FirstPage2()),
+        MaterialPageRoute(builder: (context) => FirstPage()),
       );
     }
   }
@@ -371,8 +499,6 @@ class _ShowData extends State<OrderDetail> {
       Navigator.of(context).pop();
     }
   }
-
-
 
   void _showAlert(BuildContext context, String value) {
     AlertDialog dialog = new AlertDialog(

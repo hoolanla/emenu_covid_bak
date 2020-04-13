@@ -154,6 +154,7 @@ class _MyHomePageState extends State<WebView_Flutter> {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
+      debugShowCheckedModeBanner: false,
       routes: {
         "/": (_) => new WebviewScaffold(
               url: "http://103.82.248.128/eMenu/MemberLogin",

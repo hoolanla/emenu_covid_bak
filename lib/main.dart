@@ -1,4 +1,6 @@
 
+import 'package:emenu_covid/screens/home/FirstPage.dart';
+import 'package:emenu_covid/screens/home/MyOrder.dart';
 import 'package:flutter/material.dart';
 import 'package:emenu_covid/screens/login/login.dart';
 import 'package:emenu_covid/screens/home/MainLogin.dart';
@@ -27,13 +29,15 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
 
     return new MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: 'eMenu',
         theme: androidTheme,
         initialRoute: '/',
         routes: <String, Widget Function(BuildContext)>{
            '/': (context) => MainLogin(),
           //'/login': (context) => App(),
-//          '/firstpage2': (context) => FirstPage2(),
+         '/MyOrder': (context) => MyOrder(),
+          '/FirstPage': (context) => FirstPage(),
 //          '/map': (context) => Mapgoogle(),
 //         '/': (context) => Login(),
         }

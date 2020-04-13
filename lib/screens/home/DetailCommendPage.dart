@@ -2,17 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:emenu_covid/models/foods.dart';
 import 'package:emenu_covid/models/order.dart';
 import 'package:emenu_covid/screens/Json/foods.dart';
-import 'package:emenu_covid/screens/home/FirstPage2.dart';
+import 'package:emenu_covid/screens/home/FirstPage.dart';
+import 'package:emenu_covid/screens/home/OrderHeader.dart';
 import 'package:emenu_covid/globals.dart' as globals;
 import 'package:emenu_covid/models/restaurant.dart';
 import 'package:emenu_covid/sqlite/db_helper.dart';
 import 'package:emenu_covid/screens/home/MyOrder.dart';
 import 'package:emenu_covid/globals.dart';
+import 'package:flutter/services.dart';
+import 'package:emenu_covid/services/AlertForm.dart';
 
 String _mImage;
 String _mRestaurantName;
 Future<Menu> _menuPage1;
 Future<Restaurant> _rest;
+
 void main() {
   runApp(DetailCommendPage());
 }
@@ -143,8 +147,7 @@ class _HomePageState extends State<HomePage>
     return new Scaffold(
       appBar: new AppBar(
         backgroundColor: Colors.green,
-        title: Text(
-          globals.restaurantName,
+        title: Text(globals.restaurantName.toString(),
           textAlign: TextAlign.center,
           style: TextStyle(
             color: Colors.white,
@@ -198,7 +201,7 @@ class _HomePageState extends State<HomePage>
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => FirstPage2()),
+                    MaterialPageRoute(builder: (context) => FirstPage()),
                   );
                 }),
             //   new IconButton(icon: new Text('SAVE'), onPressed: null),
@@ -220,34 +223,36 @@ class _HomePageState extends State<HomePage>
                 }),
 
             new IconButton(
-                icon: new Icon(Icons.list),
+                icon: new Icon(Icons.add_shopping_cart),
                 onPressed: () {
                   if (globals.restaurantID != null) {
                     if (globals.restaurantID != '') {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => null),
+                        MaterialPageRoute(builder: (context) => MyOrder()),
                       );
                     } else {}
                   } else {}
                 }),
 
             new IconButton(
-                icon: new Icon(Icons.history),
+                icon: new Icon(Icons.list),
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => null),
-                  );
+                  if (globals.restaurantID != null) {
+                    if (globals.restaurantID != '') {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => OrderHeader()),
+                      );
+                    } else {}
+                  } else {}
                 }),
-//            new IconButton(
-//                icon: new Icon(Icons.map),
-//                onPressed: () {
-//                  Navigator.push(
-//                    context,
-//                    MaterialPageRoute(builder: (context) => Mapgoogle()),
-//                  );
-//                }),
+
+            new IconButton(icon: new Icon(Icons.exit_to_app), onPressed: (){
+
+              showAlert(context);
+              // SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+            }),
           ],
         ),
       ),
@@ -400,7 +405,7 @@ class _HomePageState extends State<HomePage>
           totalPrice, taste, comment);
 
       dbHelper.save(e);
-      // showSnak();
+      globals.hasMyOrder = "1";
       globals.restaurantID = widget.restaurantID;
       Navigator.push(
         context,
@@ -448,60 +453,59 @@ class _HomePageState extends State<HomePage>
                 ListView.builder(
                   itemBuilder: (context, index) {
                     return Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 16.0,
-                        vertical: 8.0,
-                      ),
-                      child: new Container(
-                        child:      ListTile(
-                          leading: Icon(
-                            Icons.fastfood,
-                            color: Colors.redAccent,
-                            size: 20.0,
-                          ),
-                          title: Text(
-                            menu.data[idx].foodsItems[index].foodName,
-                            style: TextStyle(fontFamily: 'Kanit'),
-                          ),
-                          subtitle: Text(
-                            menu.data[idx].foodsItems[index].price.toString(),
-                            style: TextStyle(
-                              fontFamily: 'Kanit',
-                            ),
-                          ),
-                          trailing: FlatButton(
-                              color: Colors.deepOrange,
-                              textColor: Colors.white,
-                              padding: EdgeInsets.fromLTRB(8.0, 8.0, 0.0, 8.0),
-                              child: Text(
-                                menu.data[idx].foodsItems[index].price
-                                    .toString() +
-                                    " บาท",
-                                style: TextStyle(
-                                  fontSize: 12.0,
-                                  fontFamily: 'Kanit',
-                                ),
-                              ),
-                              onPressed: () => _foo(
-                                m_foodID: menu
-                                    .data[idx].foodsItems[index].foodID
-                                    .toString(),
-                                m_foodName:
-                                menu.data[idx].foodsItems[index].foodName,
-                                m_price:
-                                menu.data[idx].foodsItems[index].price,
-                              )),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 16.0,
+                          vertical: 8.0,
                         ),
-                        decoration: new BoxDecoration(
-                            border: Border(
-                                bottom: new BorderSide(
-                                  color: Colors.grey[350],
-                                  width: 0.5,
-                                  style: BorderStyle.solid,
-                                ))),
-                      )
-
-                    );
+                        child: new Container(
+                          child: ListTile(
+                            leading: Icon(
+                              Icons.fastfood,
+                              color: Colors.redAccent,
+                              size: 20.0,
+                            ),
+                            title: Text(
+                              menu.data[idx].foodsItems[index].foodName,
+                              style: TextStyle(fontFamily: 'Kanit'),
+                            ),
+//                          subtitle: Text(
+//                            menu.data[idx].foodsItems[index].price.toString(),
+//                            style: TextStyle(
+//                              fontFamily: 'Kanit',
+//                            ),
+//                          ),
+                            trailing: FlatButton(
+                                color: Colors.deepOrange,
+                                textColor: Colors.white,
+                                padding:
+                                    EdgeInsets.fromLTRB(8.0, 8.0, 0.0, 8.0),
+                                child: Text(
+                                  menu.data[idx].foodsItems[index].price
+                                          .toString() +
+                                      " บาท",
+                                  style: TextStyle(
+                                    fontSize: 12.0,
+                                    fontFamily: 'Kanit',
+                                  ),
+                                ),
+                                onPressed: () => _foo(
+                                      m_foodID: menu
+                                          .data[idx].foodsItems[index].foodID
+                                          .toString(),
+                                      m_foodName: menu
+                                          .data[idx].foodsItems[index].foodName,
+                                      m_price: menu
+                                          .data[idx].foodsItems[index].price,
+                                    )),
+                          ),
+                          decoration: new BoxDecoration(
+                              border: Border(
+                                  bottom: new BorderSide(
+                            color: Colors.grey[350],
+                            width: 0.5,
+                            style: BorderStyle.solid,
+                          ))),
+                        ));
                   },
                   itemCount: menu.data[idx].foodsItems.length,
                   shrinkWrap: true,

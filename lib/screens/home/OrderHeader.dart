@@ -2,13 +2,17 @@ import 'package:emenu_covid/models/orderHeader.dart';
 import 'package:flutter/material.dart';
 import 'package:emenu_covid/models/order.dart';
 import 'dart:async';
-import 'package:emenu_covid/screens/home/FirstPage2.dart';
+import 'package:emenu_covid/screens/home/FirstPage.dart';
+import 'package:emenu_covid/screens/home/DetailCommendPage.dart';
+import 'package:emenu_covid/screens/home/MyOrder.dart';
 import 'package:emenu_covid/screens/Json/foods.dart';
 import 'package:emenu_covid/sqlite/db_helper.dart';
 import 'package:emenu_covid/globals.dart' as globals;
 import 'package:emenu_covid/models/bill.dart';
 import 'package:emenu_covid/screens/home/OrderDetail.dart';
 import 'package:emenu_covid/models/logout.dart';
+import 'package:emenu_covid/services/AlertForm.dart';
+
 
 //String _restaurantID = globals.restaurantID;
 //String _tableID = globals.tableID;
@@ -88,7 +92,7 @@ class _ShowData extends State<OrderHeader> {
 
     refreshOrderHeader();
     refreshJsonBody();
-    //  refreshTotalCheckbill();
+    refreshTotalHeader();
   }
 
   showSnak() {
@@ -105,9 +109,10 @@ class _ShowData extends State<OrderHeader> {
     });
   }
 
-  refreshTotalCheckbill() {
+  refreshTotalHeader() {
     setState(() {
-      _totalsCheckbill = NetworkFoods.loadTotalStatusOrder(strBody);
+      _totalsCheckbill = NetworkFoods.loadTotalOrderHeader(strBody);
+
     });
   }
 
@@ -174,9 +179,7 @@ class _ShowData extends State<OrderHeader> {
                       title: Text(
                         'ร้าน: ' +
                             menu.orderHeaderList[idx].restaurant_name
-                                .toString() +
-                            '    จำนวน: ' +
-                            menu.orderHeaderList[idx].qty.toString(),
+                                .toString(),
                         style: TextStyle(
                           fontFamily: 'Kanit',
                         ),
@@ -185,10 +188,10 @@ class _ShowData extends State<OrderHeader> {
                         children: <Widget>[
                           new Row(
                             children: <Widget>[
-                              Text(
-                                'รวมราคา: ' +
+                              Text(   menu.orderHeaderList[idx].qty.toString() +
+                                'x     รวมราคา: ' +
                                     menu.orderHeaderList[idx].totalPrice
-                                        .toString(),
+                                        .toString() + ' บาท',
                                 style: TextStyle(
                                   fontFamily: 'Kanit',
                                 ),
@@ -248,6 +251,35 @@ class _ShowData extends State<OrderHeader> {
         itemCount: menu.orderHeaderList.length,
       );
 
+  Widget HeaderColumn() {
+    return new Container(
+      height: 30,
+      child: new ListTile(
+        onTap: null,
+        title: Row(children: <Widget>[
+          new Expanded(
+              child: new Text(
+                "รายการ",
+                style: TextStyle(
+                  fontFamily: 'Kanit',
+                  color: Colors.grey,
+                  fontWeight: FontWeight.bold,
+                ),
+              )),
+        ]),
+        trailing: Text(
+          'สถานะ ',
+          style: TextStyle(
+            fontFamily: 'Kanit',
+            color: Colors.grey,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    );
+  }
+
+
   Widget _noOrder() {
     return new Card(
 //      child: null,
@@ -283,10 +315,14 @@ class _ShowData extends State<OrderHeader> {
           future: resultOrderHeader,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
+
               if (snapshot.data != null) {
-                if (snapshot.data.orderHeaderList.length == 0) {
+
+                if (snapshot.data.ResultOk == "false") {
                   return _noOrder();
-                } else {
+                }
+                else
+                  {
                   return new Column(
                     mainAxisSize: MainAxisSize.max,
                     children: <Widget>[
@@ -296,7 +332,9 @@ class _ShowData extends State<OrderHeader> {
                     ],
                   );
                 }
-              } else {
+              }
+              else
+                {
                 return Container(
                   child: Center(
                     child: Column(
@@ -363,63 +401,100 @@ class _ShowData extends State<OrderHeader> {
           mainAxisSize: MainAxisSize.min,
           verticalDirection: VerticalDirection.down,
           children: <Widget>[
+            HeaderColumn(),
             listStatusOrder(),
-//            Row(children: <Widget>[
-//              Expanded(
-//                child: new RaisedButton(
-//                  color: Colors.deepOrangeAccent,
-//                  child: FutureBuilder(
-//                      future: _totalsCheckbill,
-//                      builder: (context, snapshot) {
-//                        if (snapshot.hasData) {
-//                          if (snapshot.data != null) {
-//                            return Text(
-//                              'Total ${snapshot.data} || REFRESH',
-//                              style: TextStyle(
-//                                color: Colors.white,
-//                                fontFamily: 'Kanit',
-//                              ),
-//                            );
-//                          } else {
-//                            return Container(
-//                              child: Center(
-//                                child: Column(
-//                                  crossAxisAlignment: CrossAxisAlignment.center,
-//                                  children: <Widget>[
-//                                    SizedBox(
-//                                      child: CircularProgressIndicator(),
-//                                      height: 10.0,
-//                                      width: 10.0,
-//                                    )
-//                                  ],
-//                                ),
-//                              ),
-//                            );
-//                          }
-//                        } else {
-//                          return Container(
-//                            child: Center(
-//                              child: Column(
-//                                crossAxisAlignment: CrossAxisAlignment.center,
-//                                children: <Widget>[
-//                                  SizedBox(
-//                                    child: CircularProgressIndicator(),
-//                                    height: 10.0,
-//                                    width: 10.0,
-//                                  )
-//                                ],
-//                              ),
-//                            ),
-//                          );
-//                        }
-//                      }),
-//                  onPressed: () {
-//                    refreshOrderHeader();
-//                    //    refreshTotalCheckbill();
-//                  },
-//                ),
-//              ),
-//            ])
+            Row(children: <Widget>[
+              Expanded(
+                child: new RaisedButton(
+                  color: Colors.white,
+                  child: FutureBuilder(
+                      future: _totalsCheckbill,
+                      builder: (context, snapshot) {
+                        return Text(
+                          'รวมราคา  ${snapshot.data.toString().replaceAll('.0', '')} บาท',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontFamily: 'Kanit',
+                          ),
+                        );
+                      }),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => OrderHeader()),
+                    );
+                  },
+                ),
+              ),
+
+            ])
+
+          ],
+        ),
+      ),
+      bottomNavigationBar: new BottomAppBar(
+        child: new Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisSize: MainAxisSize.max,
+          children: <Widget>[
+            new IconButton(
+                icon: new Icon(Icons.home),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => FirstPage()),
+                  );
+                }),
+            //   new IconButton(icon: new Text('SAVE'), onPressed: null),
+
+            new IconButton(
+                icon: new Icon(Icons.restaurant),
+                onPressed: () {
+                  if (globals.restaurantID != null) {
+                    if (globals.restaurantID != '') {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => DetailCommendPage(
+                              restaurantID: globals.restaurantID,
+                            )),
+                      );
+                    } else {}
+                  } else {}
+                }),
+
+            new IconButton(
+                icon: new Icon(Icons.add_shopping_cart),
+                onPressed: () {
+                  if (globals.restaurantID != null) {
+                    if (globals.restaurantID != '') {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => MyOrder()),
+                      );
+                    } else {}
+                  } else {}
+                }),
+            new IconButton(
+                icon: new Icon(Icons.list),
+                onPressed: () {
+                  if (globals.restaurantID != null) {
+                    if (globals.restaurantID != '') {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => OrderHeader()),
+                      );
+                    } else {}
+                  } else {}
+                }),
+
+            new IconButton(
+                icon: new Icon(Icons.exit_to_app),
+                onPressed: () {
+                  showAlert(context);
+
+                }),
+
           ],
         ),
       ),
@@ -439,7 +514,7 @@ class _ShowData extends State<OrderHeader> {
         globals.restaurantID = '';
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => FirstPage2()),
+          MaterialPageRoute(builder: (context) => FirstPage()),
         );
       }
     } else {
@@ -447,7 +522,7 @@ class _ShowData extends State<OrderHeader> {
       globals.restaurantID = '';
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => FirstPage2()),
+        MaterialPageRoute(builder: (context) => FirstPage()),
       );
     }
   }
@@ -483,83 +558,7 @@ class _ShowData extends State<OrderHeader> {
         });
   }
 
-  void _showAlert(BuildContext context, String value) {
-    AlertDialog dialog = new AlertDialog(
-      content: Text('คุณต้องการสั่งอาหาร ?'),
-      actions: <Widget>[
-        FlatButton(
-            onPressed: () => _dialogResult('Cancel'), child: Text('Cancel')),
-        FlatButton(
-            onPressed: () {
-              _dialogResult('Accept');
-            },
-            child: Text('Accept'))
-      ],
-    );
 
-    showDialog(
-      context: context,
-      child: dialog,
-      barrierDismissible: true,
-    );
-  }
-
-  showAlertDialog(BuildContext context, String strJson) {
-    // set up the buttons
-    Widget cancelButton = FlatButton(
-      child: Text("Cancel"),
-      onPressed: () {
-        Navigator.pop(context);
-      },
-    );
-    Widget continueButton = FlatButton(
-      child: Text("Continue"),
-      onPressed: () {
-        ttt(strJson);
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => null,
-          ),
-        );
-      },
-    );
-
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      title: Text("AlertDialog"),
-      content: Text(
-          "Would you like to continue learning how to use Flutter alerts?"),
-      actions: [
-        cancelButton,
-        continueButton,
-      ],
-    );
-
-    // show the dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
-  }
-
-  void ttt(String strAll) async {
-    print('================> ' + strAll);
-
-    var feed = await NetworkFoods.inSertOrder(strBody: strAll);
-    var data = DataFeed(feed: feed);
-    if (data.feed.ResultOk.toString() == "true") {
-      dbHelper.deleteAll();
-
-      refreshOrderHeader();
-      //  refreshTotalCheckbill();
-      refreshJsonBody();
-    } else {
-      showSnak();
-    }
-  }
 }
 
 class DataFeed {

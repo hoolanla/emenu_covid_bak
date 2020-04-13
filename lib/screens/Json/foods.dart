@@ -41,14 +41,19 @@ class NetworkFoods {
 
   static Future<Restaurant> loadRestaurant() async {
     String url = 'http://103.82.248.128/eMenuAPI/api/eMenu/DelGetFirstPage';
-    String body = '';
+    String Strbody = '{"restaurantID":"","latitude":"${globals.latitude}","longtitude":"${globals.longtitude}"}';
+
+
+    print(Strbody);
+
     var response = await http.post(
       '$url',
       headers: {"Content-Type": "application/json"},
+      body: Strbody,
     );
     final jsonResponse = json.decode(response.body.toString());
     Restaurant _restaurant = new Restaurant.fromJson(jsonResponse);
- //   print(response.body.toString());
+   print(response.body.toString());
     return _restaurant;
   }
 
@@ -114,14 +119,44 @@ class NetworkFoods {
     return _statusOrder;
   }
 
+
+
+
+  static Future<double> loadTotalOrderHeader(String strBody) async {
+    String url = 'http://103.82.248.128/eMenuAPI/api/eMenu/DelGetOrderHeaderByUserID';
+    var response = await http.post('$url',
+        headers: {"Content-Type": "application/json"}, body: strBody);
+    final jsonResponse = json.decode(response.body.toString());
+
+    ResultOrderHeader _totals = new ResultOrderHeader.fromJson(jsonResponse);
+ //   StatusOrder _totals = new StatusOrder.fromJson(jsonResponse);
+
+    double total = 0;
+
+    if(_totals.ResultOk ==  "true")
+
+    {
+      for (int i = 0; i < _totals.orderHeaderList.length; i++) {
+        print(_totals.orderHeaderList[i].totalPrice);
+        total += double.parse(_totals.orderHeaderList[i].totalPrice);
+      }
+      return total;
+    }
+    else
+    {
+      return 0;
+    }
+  }
+
+
   static Future<ResultOrderHeader> loadOrderHeader(String strBody) async {
 
     String url = 'http://103.82.248.128/eMenuAPI/api/eMenu/DelGetOrderHeaderByUserID';
 
-    print(strBody);
+  //  print(strBody);
     var response = await http.post('$url',
         headers: {"Content-Type": "application/json"}, body: strBody);
-  // print(response.body.toString());
+   print(response.body.toString());
 
     final jsonResponse = json.decode(response.body.toString());
     if (jsonResponse.toString().contains('false')) {}
@@ -131,26 +166,35 @@ class NetworkFoods {
     return _ResultOrderHeader;
   }
 
-
-  static Future<ResultOrderDetail> loadOrderDetail(String strBody) async {
-
+  static Future<double> loadTotalOrderDetail(String strBody) async {
     String url = 'http://103.82.248.128/eMenuAPI/api/eMenu/DelGetOrderDetail';
-
-    print(strBody);
     var response = await http.post('$url',
         headers: {"Content-Type": "application/json"}, body: strBody);
-    print(response.body.toString());
-
+    final jsonResponse = json.decode(response.body.toString());
+    ResultOrderDetail _totals = new ResultOrderDetail.fromJson(jsonResponse);
+    double total = 0;
+    if(_totals.orderList.length > 0)
+    {
+      for (int i = 0; i < _totals.orderList.length; i++) {
+        print(_totals.orderList[i].totalPrice);
+        total += double.parse(_totals.orderList[i].totalPrice);
+      }
+      return total;
+    }
+    else
+    {
+      return 0;
+    }
+  }
+  static Future<ResultOrderDetail> loadOrderDetail(String strBody) async {
+    String url = 'http://103.82.248.128/eMenuAPI/api/eMenu/DelGetOrderDetail';
+    var response = await http.post('$url',
+        headers: {"Content-Type": "application/json"}, body: strBody);
     final jsonResponse = json.decode(response.body.toString());
     if (jsonResponse.toString().contains('false')) {}
-
-    print(response.body.toString());
-
     ResultOrderDetail _ResultOrderDetail = new ResultOrderDetail.fromJson(jsonResponse);
     return _ResultOrderDetail;
   }
-
-
 
 
   static Future<double> loadTotalStatusOrder(String strBody) async {
@@ -159,6 +203,7 @@ class NetworkFoods {
         headers: {"Content-Type": "application/json"}, body: strBody);
     final jsonResponse = json.decode(response.body.toString());
 
+     //  print(response.body.toString());
     StatusOrder _totals = new StatusOrder.fromJson(jsonResponse);
 
     double total = 0;
@@ -169,6 +214,8 @@ class NetworkFoods {
         print(_totals.orderList[i].totalPrice);
         total += double.parse(_totals.orderList[i].totalPrice);
       }
+
+      print(total.toString());
       return total;
     }
     else

@@ -5,12 +5,21 @@ import 'package:geolocator/geolocator.dart';
 import 'package:emenu_covid/globals.dart' as globals;
 
 void main() {
-  runApp(new MaterialApp(home: new MainLogin()));
+
+
+  runApp(new MaterialApp(
+    debugShowCheckedModeBanner: false,
+    home: new MainLogin(),
+  ));
 }
 
 class MainLogin extends StatefulWidget {
+
+
+
   @override
   MainLoginState createState() => new MainLoginState();
+
 }
 
 class MainLoginState extends State<MainLogin> {
@@ -19,18 +28,17 @@ class MainLoginState extends State<MainLogin> {
   String displayedString = "";
 
   String _locationMessage = "";
+
   void _getCurrentLocation() async {
     final position = await Geolocator()
         .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-    print(position);
-
+  //  print(position);
     setState(() {
       _locationMessage = "${position.latitude}, ${position.longitude}";
       globals.latitude = "${position.latitude}";
       globals.longtitude = "${position.longitude}";
     });
   }
-
 
 
 
@@ -44,10 +52,16 @@ class MainLoginState extends State<MainLogin> {
         context, new MaterialPageRoute(builder: (context) => new Login()));
   }
 
+
+  @override
+  void initState() {
+    _getCurrentLocation();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
 
-    _getCurrentLocation();
 
     return new Scaffold(
         appBar: new AppBar(

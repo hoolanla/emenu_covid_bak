@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:validators/validators.dart';
 import 'package:emenu_covid/models/register.dart';
 import 'package:emenu_covid/screens/Json/foods.dart';
@@ -8,11 +9,11 @@ import 'package:emenu_covid/globals.dart' as globals;
 
 class SignUp extends StatefulWidget {
   final String userName;
-  final String email;
+  final String telephone;
 
   SignUp({
     this.userName,
-    this.email,
+    this.telephone,
   });
 
   @override
@@ -23,11 +24,11 @@ class _SignUpState extends State<SignUp> {
   final _formKey = GlobalKey<FormState>();
 
   static final TextEditingController _textFullName = TextEditingController();
-  static final TextEditingController _textEmail = TextEditingController();
+  static final TextEditingController _textTel = TextEditingController();
 
   Register _reg;
   String username;
-  String email;
+  String tel;
   String password;
 
   String gender;
@@ -35,7 +36,7 @@ class _SignUpState extends State<SignUp> {
   bool hidePass = true;
   bool loading = false;
   FocusNode passwordFocusNode = new FocusNode();
-  FocusNode emailFocusNode = new FocusNode();
+  FocusNode telFocusNode = new FocusNode();
 
   @override
   Widget build(BuildContext context) {
@@ -81,9 +82,9 @@ class _SignUpState extends State<SignUp> {
     }
 
 
-    void SendtoJson({String email, String password, String username}) async {
+    void SendtoJson({String tel, String password, String username}) async {
       String strBody =
-          '{"email":"${email}","password":"${password}","username":"${username}"}';
+          '{"tel":"${tel}","password":"${password}","username":"${username}"}';
       var feed = await NetworkFoods.insertRegister(strBody: strBody);
       var data = DataFeed(feed: feed);
 
@@ -103,12 +104,12 @@ class _SignUpState extends State<SignUp> {
       if (this._formKey.currentState.validate()) {
         _formKey.currentState.save();
         //todo
-        SendtoJson(email: email, password: password, username: username);
+        SendtoJson(tel: tel, password: password, username: username);
       }
     }
 
-    _textFullName.text = globals.fullName;
-    _textEmail.text = globals.emailFB;
+//    _textFullName.text = globals.fullName;
+//    _textTel.text = globals.emailFB;
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -142,7 +143,7 @@ class _SignUpState extends State<SignUp> {
                           username = value;
                         },
                         onFieldSubmitted: (String value) {
-                          FocusScope.of(context).requestFocus(emailFocusNode);
+                          FocusScope.of(context).requestFocus(telFocusNode);
                         },
                       ),
                     ),
@@ -159,20 +160,22 @@ class _SignUpState extends State<SignUp> {
                     padding: const EdgeInsets.only(left: 12.0),
                     child: ListTile(
                       title: TextFormField(
-                        controller: _textEmail,
+                        inputFormatters: [LengthLimitingTextInputFormatter(10)],
+                        controller: _textTel,
                         decoration: InputDecoration(
-                            hintText: "Email",
-                            icon: Icon(Icons.alternate_email),
+                            hintText: "Telephone",
+                            icon: Icon(Icons.phone),
+
                             border: InputBorder.none),
-                        validator: _validateEmail,
+                        validator: _validateTel,
                         onSaved: (String value) {
-                          email = value;
+                          tel = value;
                         },
                         onFieldSubmitted: (String value) {
                           FocusScope.of(context)
                               .requestFocus(passwordFocusNode);
                         },
-                        focusNode: emailFocusNode,
+                        focusNode: telFocusNode,
                       ),
                     ),
                   ),
@@ -260,12 +263,17 @@ class _SignUpState extends State<SignUp> {
     );
   }
 
-  String _validateEmail(String value) {
+  String _validateTel(String value) {
     if (value.isEmpty) {
-      return "Email is empty.";
+      return "Telphone is empty.";
     }
-    if (!isEmail(value)) {
-      return "Email must must be valid email pattern.";
+
+    if (!isNumeric(value)) {
+      return "Telphone must numeric.";
+    }
+
+    if (!isLength(value,10,10)) {
+      return "Telphone must Length 10 charactors.";
     }
     return null;
   }

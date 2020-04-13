@@ -5,7 +5,7 @@ import 'package:validators/validators.dart';
 import 'package:emenu_covid/models/register.dart';
 import 'package:emenu_covid/screens/Json/foods.dart';
 import 'package:emenu_covid/globals.dart' as globals;
-import 'package:emenu_covid/screens/home/FirstPage2.dart';
+import 'package:emenu_covid/screens/home/FirstPage.dart';
 
 class Profile extends StatefulWidget {
   final String userName;
@@ -54,7 +54,7 @@ class _SignUpState extends State<Profile> {
                 FlatButton(
                   onPressed: () {
                     Navigator.push(
-                        context, new MaterialPageRoute(builder: (context) => new FirstPage2()));
+                        context, new MaterialPageRoute(builder: (context) => new FirstPage()));
                   },
                   child: Text("OK"),
                 )
@@ -127,6 +127,7 @@ class _SignUpState extends State<Profile> {
           ),
         ),
       ),
+
       body: SingleChildScrollView(
         padding: EdgeInsets.fromLTRB(20, 100, 20, 10),
         child: Form(

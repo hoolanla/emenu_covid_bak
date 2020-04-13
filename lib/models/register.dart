@@ -1,7 +1,7 @@
 
 class Register{
   String username;
-  String email;
+  String tel;
   String password;
 }
 

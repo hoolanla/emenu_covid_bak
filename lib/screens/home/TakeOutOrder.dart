@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:emenu_covid/models/order.dart';
 import 'dart:async';
-import 'package:emenu_covid/screens/home/FirstPage2.dart';
-import 'package:emenu_covid/screens/home/status_order.dart';
+import 'package:emenu_covid/screens/home/FirstPage.dart';
 import 'package:emenu_covid/screens/Json/foods.dart';
 import 'package:emenu_covid/sqlite/db_helper.dart';
 import 'package:emenu_covid/globals.dart' as globals;
@@ -257,7 +256,7 @@ class _ShowData extends State<TakeOutOrder> {
 //                          )
                         ],
                       ),
-                      trailing: changeIcon(status: menu.orderList[idx].status),
+                   //   trailing: changeIcon(status: menu.orderList[idx].status),
                     ),
                     decoration: new BoxDecoration(
                       border: Border(
@@ -455,6 +454,66 @@ class _ShowData extends State<TakeOutOrder> {
           ],
         ),
       ),
+
+
+      bottomNavigationBar: new BottomAppBar(
+        child: new Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisSize: MainAxisSize.max,
+          children: <Widget>[
+            new IconButton(
+                icon: new Icon(Icons.home),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => FirstPage()),
+                  );
+                }),
+            //   new IconButton(icon: new Text('SAVE'), onPressed: null),
+
+            new IconButton(
+                icon: new Icon(Icons.restaurant),
+                onPressed: () {
+                  if (globals.restaurantID != null) {
+                    if (globals.restaurantID != '') {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => DetailCommendPage(
+                              restaurantID: globals.restaurantID,
+                            )),
+                      );
+                    } else {}
+                  } else {}
+                }),
+
+//            new IconButton(
+//                icon: new Icon(Icons.list),
+//                onPressed: () {
+//                  if (globals.restaurantID != null) {
+//                    if (globals.restaurantID != '') {
+//                      Navigator.push(
+//                        context,
+//                        MaterialPageRoute(builder: (context) => null),
+//                      );
+//                    } else {}
+//                  } else {}
+//                }),
+//
+//            new IconButton(
+//                icon: new Icon(Icons.history),
+//                onPressed: () {
+//                  Navigator.push(
+//                    context,
+//                    MaterialPageRoute(builder: (context) => null),
+//                  );
+//                }),
+
+          ],
+        ),
+      ),
+
+
     );
   }
 
@@ -471,7 +530,7 @@ class _ShowData extends State<TakeOutOrder> {
         globals.restaurantID = '';
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => FirstPage2()),
+          MaterialPageRoute(builder: (context) => FirstPage()),
         );
       }
     } else {
@@ -479,7 +538,7 @@ class _ShowData extends State<TakeOutOrder> {
       globals.restaurantID = '';
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => FirstPage2()),
+        MaterialPageRoute(builder: (context) => FirstPage()),
       );
     }
   }

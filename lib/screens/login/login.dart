@@ -1,5 +1,6 @@
-import 'package:emenu_covid/screens/home/FirstPage2.dart';
+import 'package:emenu_covid/screens/home/FirstPage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:emenu_covid/models/user.dart';
@@ -11,6 +12,7 @@ import 'package:emenu_covid/screens/Json/foods.dart';
 import 'package:emenu_covid/models/register.dart';
 import 'package:emenu_covid/globals.dart' as globals;
 import 'package:emenu_covid/screens/login/signup.dart';
+import 'package:emenu_covid/sqlite/db_helper.dart';
 
 final User _user = new User();
 final String DISPLAYNAME = "displayName";
@@ -34,15 +36,26 @@ class _SignUpState extends State<Login> {
 
 
 
-  static final TextEditingController _textEmail = TextEditingController();
+  static final TextEditingController _textTel = TextEditingController();
 
-  String email;
+  String tel;
   String password;
 
   final _formKey = GlobalKey<FormState>();
   bool hidePass = true;
   bool _result = false;
   FocusNode passwordFocusNode = FocusNode();
+
+
+
+  var dbHelper;
+  @override
+  void initState() {
+    super.initState();
+    dbHelper = DatabaseHelper();
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -76,9 +89,9 @@ class _SignUpState extends State<Login> {
           });
     }
 
-    void SendtoJsonLogin({String email, String password, String type_}) async {
+    void SendtoJsonLogin({String tel, String password, String type_}) async {
       String strBody =
-          '{"email":"${email}","password":"${password}","type":"${type_}"}';
+          '{"tel":"${tel}","password":"${password}","type":"${type_}"}';
       var feed = await NetworkFoods.login(strBody: strBody);
       var data = DataFeed(feed: feed);
 
@@ -95,17 +108,19 @@ class _SignUpState extends State<Login> {
         globals.tel = feed.tel.toString();
         globals.lastName = feed.lastname.toString();
         globals.fullName = feed.userName.toString();
+        globals.hasMyOrder = "0";
+        dbHelper.deleteAll();
 
         Navigator.push(context,
-            new MaterialPageRoute(builder: (context) => new FirstPage2()));
+            new MaterialPageRoute(builder: (context) => new FirstPage()));
       } else {
         _showAlertDialog(strError: data.feed.ErrorMessage.toString());
       }
     }
 
-    void SendtoJsonReg({String email, String password, String username}) async {
+    void SendtoJsonReg({String tel, String password, String username}) async {
       String strBody =
-          '{"email":"${email}","password":"${password}","username":"${username}"}';
+          '{"email":"${tel}","password":"${password}","username":"${username}"}';
       var feed = await NetworkFoods.insertRegister(strBody: strBody);
       var data = DataFeedReg(feed: feed);
       if (data.feed.ResultOk.toString() == "true") {
@@ -118,7 +133,7 @@ class _SignUpState extends State<Login> {
       if (this._formKey.currentState.validate()) {
         _formKey.currentState.save();
         SharedPreferences _pref = await SharedPreferences.getInstance();
-        SendtoJsonLogin(email: email, password: password, type_: "N");
+        SendtoJsonLogin(tel: tel, password: password, type_: "N");
       }
     }
 
@@ -157,15 +172,16 @@ class _SignUpState extends State<Login> {
                                 padding: const EdgeInsets.only(left: 12.0),
                                 child: ListTile(
                                   title: TextFormField(
+                                    inputFormatters: [LengthLimitingTextInputFormatter(10)],
                                     decoration: InputDecoration(
                                       border: InputBorder.none,
-                                      hintText: 'Email',
-                                      icon: Icon(Icons.alternate_email),
+                                      hintText: 'Telephone',
+                                      icon: Icon(Icons.phone),
                                     ),
-                                    validator: _validateEmail,
-                                    controller: _textEmail,
+                                    validator: _validateTel,
+                                    controller: _textTel,
                                     onSaved: (String value) {
-                                      email = value;
+                                      tel = value;
                                     },
                                     onFieldSubmitted: (String value) {
                                       FocusScope.of(context)
@@ -313,12 +329,17 @@ class _SignUpState extends State<Login> {
     );
   }
 
-  String _validateEmail(String value) {
+  String _validateTel(String value) {
     if (value.isEmpty) {
-      return "Email is empty.";
+      return "Telphone is empty.";
     }
-    if (!isEmail(value)) {
-      return "Email must must be valid email pattern.";
+
+    if (!isNumeric(value)) {
+      return "Telphone must numeric.";
+    }
+
+    if (!isLength(value,10,10)) {
+      return "Telphone must Length 10 charactors.";
     }
     return null;
   }
