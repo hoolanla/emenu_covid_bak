@@ -29,9 +29,6 @@ class NetworkFoods {
     String url = 'http://103.82.248.128/eMenuAPI/api/eMenu/DelGeteMenu';
     String body =
         '{"restaurantID":"${RestaurantID}","recommend":"${Recommend}"}';
-
-
-  //  print(body);
     var response = await http.post('$url',
         headers: {"Content-Type": "application/json"}, body: body);
     final jsonResponse = json.decode(response.body.toString());
@@ -41,11 +38,9 @@ class NetworkFoods {
 
   static Future<Restaurant> loadRestaurant() async {
     String url = 'http://103.82.248.128/eMenuAPI/api/eMenu/DelGetFirstPage';
-    String Strbody = '{"restaurantID":"","latitude":"${globals.latitude}","longtitude":"${globals.longtitude}"}';
-
+    String Strbody = '{"restaurantID":"","Latitude":"${globals.latitude}","Longtitude":"${globals.longtitude}"}';
 
     print(Strbody);
-
     var response = await http.post(
       '$url',
       headers: {"Content-Type": "application/json"},
@@ -53,13 +48,11 @@ class NetworkFoods {
     );
     final jsonResponse = json.decode(response.body.toString());
     Restaurant _restaurant = new Restaurant.fromJson(jsonResponse);
-   print(response.body.toString());
     return _restaurant;
   }
 
   static Future<LogoutTable> loadLogout(String strBody) async {
     String url = 'http://103.82.248.128/eMenuAPI/api/eMenu/Logout';
-
     var response = await http.post(
       '$url',
       headers: {"Content-Type": "application/json"},
@@ -67,11 +60,8 @@ class NetworkFoods {
     );
     final jsonResponse = json.decode(response.body.toString());
     LogoutTable _logout = new LogoutTable.fromJson(jsonResponse);
-//    print(response.body.toString());
     return _logout;
   }
-
-
 
   static Future<retCheckBillStatus> loadRetCheckBillStatus(String strBody) async {
     String url = 'http://103.82.248.128/eMenuAPI/api/eMenu/getStatusOrderIsBillPlease';
@@ -84,7 +74,6 @@ class NetworkFoods {
     retCheckBillStatus _ret = new retCheckBillStatus.fromJson(jsonResponse);
     return _ret;
   }
-
 
   static Future<Restaurant> loadRestaurantByID({String strBody}) async {
     String url = 'http://103.82.248.128/eMenuAPI/api/eMenu/getFirstPageByID';
@@ -100,26 +89,14 @@ class NetworkFoods {
   }
 
   static Future<StatusOrder> loadStatusOrder(String strBody) async {
-//      String jsonPage = await  rootBundle.loadString('assets/foods2.json');
-//    final jsonResponse = json.decode(jsonPage);
-//    Menu _menu = new Menu.fromJson(jsonResponse);
-//    return _menu;
-  //  print(strBody);
-
     String url = 'http://103.82.248.128/eMenuAPI/api/eMenu/getOrder';
     var response = await http.post('$url',
         headers: {"Content-Type": "application/json"}, body: strBody);
-   // print(response.body.toString());
-
     final jsonResponse = json.decode(response.body.toString());
     if (jsonResponse.toString().contains('false')) {}
-
-//jsonResponse.
     StatusOrder _statusOrder = new StatusOrder.fromJson(jsonResponse);
     return _statusOrder;
   }
-
-
 
 
   static Future<double> loadTotalOrderHeader(String strBody) async {
@@ -127,17 +104,11 @@ class NetworkFoods {
     var response = await http.post('$url',
         headers: {"Content-Type": "application/json"}, body: strBody);
     final jsonResponse = json.decode(response.body.toString());
-
     ResultOrderHeader _totals = new ResultOrderHeader.fromJson(jsonResponse);
- //   StatusOrder _totals = new StatusOrder.fromJson(jsonResponse);
-
     double total = 0;
-
     if(_totals.ResultOk ==  "true")
-
     {
       for (int i = 0; i < _totals.orderHeaderList.length; i++) {
-        print(_totals.orderHeaderList[i].totalPrice);
         total += double.parse(_totals.orderHeaderList[i].totalPrice);
       }
       return total;
@@ -150,18 +121,11 @@ class NetworkFoods {
 
 
   static Future<ResultOrderHeader> loadOrderHeader(String strBody) async {
-
     String url = 'http://103.82.248.128/eMenuAPI/api/eMenu/DelGetOrderHeaderByUserID';
-
-  //  print(strBody);
     var response = await http.post('$url',
         headers: {"Content-Type": "application/json"}, body: strBody);
-   print(response.body.toString());
-
     final jsonResponse = json.decode(response.body.toString());
     if (jsonResponse.toString().contains('false')) {}
-
-//jsonResponse.
     ResultOrderHeader _ResultOrderHeader = new ResultOrderHeader.fromJson(jsonResponse);
     return _ResultOrderHeader;
   }
@@ -176,7 +140,6 @@ class NetworkFoods {
     if(_totals.orderList.length > 0)
     {
       for (int i = 0; i < _totals.orderList.length; i++) {
-        print(_totals.orderList[i].totalPrice);
         total += double.parse(_totals.orderList[i].totalPrice);
       }
       return total;
@@ -202,20 +165,13 @@ class NetworkFoods {
     var response = await http.post('$url',
         headers: {"Content-Type": "application/json"}, body: strBody);
     final jsonResponse = json.decode(response.body.toString());
-
-     //  print(response.body.toString());
     StatusOrder _totals = new StatusOrder.fromJson(jsonResponse);
-
     double total = 0;
-
     if(_totals.orderList.length > 0)
     {
       for (int i = 0; i < _totals.orderList.length; i++) {
-        print(_totals.orderList[i].totalPrice);
         total += double.parse(_totals.orderList[i].totalPrice);
       }
-
-      print(total.toString());
       return total;
     }
     else
@@ -225,41 +181,25 @@ class NetworkFoods {
   }
 
   static Future<HistoryUser> loadHistory(String strBody) async {
-//      String jsonPage = await  rootBundle.loadString('assets/foods2.json');
-//    final jsonResponse = json.decode(jsonPage);
-//    Menu _menu = new Menu.fromJson(jsonResponse);
-//    return _menu;
-    //  print(strBody);
     String url = 'http://103.82.248.128/eMenuAPI/api/eMenu/getHistoryUser';
     var response = await http.post('$url',
         headers: {"Content-Type": "application/json"}, body: strBody);
     final jsonResponse = json.decode(response.body.toString());
-
     HistoryUser _history = new HistoryUser.fromJson(jsonResponse);
-
     return _history;
   }
 
 
   static Future<double> loadTotalHistory(String strBody) async {
-//      String jsonPage = await  rootBundle.loadString('assets/foods2.json');
-//    final jsonResponse = json.decode(jsonPage);
-//    Menu _menu = new Menu.fromJson(jsonResponse);
-//    return _menu;
-    //  print(strBody);
     String url = 'http://103.82.248.128/eMenuAPI/api/eMenu/getHistoryUser';
     var response = await http.post('$url',
         headers: {"Content-Type": "application/json"}, body: strBody);
     final jsonResponse = json.decode(response.body.toString());
-
     HistoryUser _history = new HistoryUser.fromJson(jsonResponse);
-
     double total = 0;
-
     if(_history.data.length > 0)
     {
       for (int i = 0; i < _history.data.length; i++) {
-        print(_history.data[i].SumPrice);
         total += _history.data[i].SumPrice;
       }
       return total;
@@ -271,12 +211,10 @@ class NetworkFoods {
   }
 
   static Future<RetStatusInsertOrder> inSertOrder({String strBody}) async {
-
     String url = 'http://103.82.248.128/eMenuAPI/api/eMenu/DelInsertOrder';
     var response = await http.post('$url',
         headers: {"Content-Type": "application/json"}, body: strBody);
     final jsonResponse = json.decode(response.body.toString());
-
     RetStatusInsertOrder _retStatusInsertOrder =
     new RetStatusInsertOrder.fromJson(jsonResponse);
     return _retStatusInsertOrder;
@@ -302,13 +240,9 @@ class NetworkFoods {
   }
 
   static Future<RetLogin> login({String strBody}) async {
-
-    print(strBody);
-
     String url = 'http://103.82.248.128/eMenuAPI/api/eMenu/login';
     var response = await http.post('$url',
         headers: {"Content-Type": "application/json"}, body: strBody);
-    print(response.body.toString());
     final jsonResponse = json.decode(response.body.toString());
     RetLogin _ret = new RetLogin.fromJson(jsonResponse);
     return _ret;
@@ -324,14 +258,11 @@ class NetworkFoods {
   }
 
   static Future<RetCancelOrder> cancelOrder({String strBody}) async {
-    print(strBody);
-
     String url = 'http://103.82.248.128/eMenuAPI/api/eMenu/cancelOrder';
     var response = await http.post('$url',
         headers: {"Content-Type": "application/json"}, body: strBody);
     final jsonResponse = json.decode(response.body.toString());
     RetCancelOrder _ret = new RetCancelOrder.fromJson(jsonResponse);
-    print(jsonResponse);
     return _ret;
   }
 }

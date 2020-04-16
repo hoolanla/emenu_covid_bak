@@ -35,6 +35,9 @@ dependencies:
   webview_flutter: ^0.3.19+9
   flutter_webview_plugin: ^0.3.11
   rflutter_alert: 1.0.3
+  condition: ^0.0.7
+  get_it: ^1.0.3+2
+  url_launcher: ^5.4.2
 
 
 dev_dependencies:
@@ -65,13 +68,12 @@ flutter:
     - assets/images/plate6.png
     - assets/images/avatar.jpg
     - assets/images/empty-cart.gif
-    - assets/images/loading2.gif
-    - assets/images/logo.png
-    - assets/images/fb.png
-    - assets/images/ggg.png
-    - assets/foods.json
-    - assets/foods2.json
-    - assets/firstpage.json
+    - assets/images/CovidFood_Logo.jpg
+    - assets/images/CovidFood_logo1.jpg
+    - assets/images/CovidFood_logoBar1.jpg
+    - assets/images/CovidFoodLogo1.png
+    - assets/images/CovidFoodLogoBar.png
+
 
   # assets:
   #  - images/a_dot_burr.jpeg

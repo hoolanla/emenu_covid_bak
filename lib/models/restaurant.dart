@@ -28,6 +28,9 @@ class RestaurantItems{
   String images;
   String distance;
   String distance_price;
+  String open_time;
+  String close_time;
+  String tel;
   RestaurantItems({
     this.restaurantID,
     this.restaurantName,
@@ -35,7 +38,10 @@ class RestaurantItems{
     this.description,
     this.images,
     this.distance,
-    this.distance_price
+    this.distance_price,
+    this.open_time,
+    this.close_time,
+    this.tel
   });
 
   factory RestaurantItems.fromJson(Map<String, dynamic> parsedJson){
@@ -45,8 +51,11 @@ class RestaurantItems{
         content: parsedJson['content'],
         description: parsedJson['description'],
         images: parsedJson['images'],
-      distance: parsedJson['distance'],
-      distance_price: parsedJson['distance_price']
+        distance: parsedJson['distance'],
+        distance_price: parsedJson['distance_price'],
+        open_time: parsedJson['open_time'],
+        close_time: parsedJson['close_time'],
+        tel: parsedJson['tel']
     );
   }
 }

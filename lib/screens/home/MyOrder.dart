@@ -272,11 +272,7 @@ class _ShowData extends State<MyOrder> {
               ),
               child: Container(
                 child: ListTile(
-                  leading: Icon(
-                    Icons.fastfood,
-                    color: Colors.redAccent,
-                    size: 20.0,
-                  ),
+
                   title: new Text(
                     orders[idx].foodsName.toString(),
                     style: TextStyle(
@@ -375,7 +371,7 @@ class _ShowData extends State<MyOrder> {
                 decoration: new BoxDecoration(
                     border: Border(
                         bottom: new BorderSide(
-                  color: Colors.grey[350],
+                  color: Colors.cyan,
                   width: 0.5,
                   style: BorderStyle.solid,
                 ))),
@@ -396,7 +392,7 @@ class _ShowData extends State<MyOrder> {
             fontFamily: 'Kanit',
           ),
         ),
-        backgroundColor: Colors.green,
+        backgroundColor: Colors.cyan,
         title: new Text(
           globals.restaurantName,
           textAlign: TextAlign.center,
@@ -441,7 +437,7 @@ class _ShowData extends State<MyOrder> {
               ),
               Expanded(
                 child: new RaisedButton(
-                  color: Colors.deepOrange,
+                  color: Colors.pinkAccent,
                   child: FutureBuilder(
                       future: _jsonBody,
                       builder: (context, snapshot) {
@@ -472,12 +468,14 @@ class _ShowData extends State<MyOrder> {
         ),
       ),
       bottomNavigationBar: new BottomAppBar(
+        color: Colors.cyan,
         child: new Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
             new IconButton(
                 icon: new Icon(Icons.home),
+                color: Colors.white,
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -488,6 +486,7 @@ class _ShowData extends State<MyOrder> {
 
             new IconButton(
                 icon: new Icon(Icons.restaurant),
+                color: Colors.white,
                 onPressed: () {
                   if (globals.restaurantID != null) {
                     if (globals.restaurantID != '') {
@@ -496,6 +495,7 @@ class _ShowData extends State<MyOrder> {
                         MaterialPageRoute(
                             builder: (context) => DetailCommendPage(
                               restaurantID: globals.restaurantID,
+                              tel: globals.restaurantTel,
                             )),
                       );
                     } else {}
@@ -504,6 +504,7 @@ class _ShowData extends State<MyOrder> {
 
             new IconButton(
                 icon: new Icon(Icons.add_shopping_cart),
+                color: Colors.white,
                 onPressed: () {
                   if (globals.restaurantID != null) {
                     if (globals.restaurantID != '') {
@@ -517,6 +518,7 @@ class _ShowData extends State<MyOrder> {
 
             new IconButton(
                 icon: new Icon(Icons.list),
+                color: Colors.white,
                 onPressed: () {
                   if (globals.restaurantID != null) {
                     if (globals.restaurantID != '') {
@@ -530,6 +532,7 @@ class _ShowData extends State<MyOrder> {
 
             new IconButton(
                 icon: new Icon(Icons.exit_to_app),
+                color: Colors.white,
                 onPressed: (){
                   showAlert(context);
                 }),

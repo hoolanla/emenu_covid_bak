@@ -18,3 +18,7 @@ String  newRestaurantID;
 String  tmpRestaurantName;
 String  newRestaurantName;
 String  hasMyOrder;
+String  showDialogFirstRun;
+String  curfew;
+String  restaurantTel;
+String  newRestaurantTel;

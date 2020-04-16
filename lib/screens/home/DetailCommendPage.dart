@@ -11,6 +11,10 @@ import 'package:emenu_covid/screens/home/MyOrder.dart';
 import 'package:emenu_covid/globals.dart';
 import 'package:flutter/services.dart';
 import 'package:emenu_covid/services/AlertForm.dart';
+import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart' as Tlaunch;
+
+
 
 String _mImage;
 String _mRestaurantName;
@@ -18,14 +22,17 @@ Future<Menu> _menuPage1;
 Future<Restaurant> _rest;
 
 void main() {
+
   runApp(DetailCommendPage());
 }
 
 class DetailCommendPage extends StatelessWidget {
   final String restaurantID;
+  final String tel;
 
   DetailCommendPage({
     this.restaurantID,
+    this.tel
   });
 
   @override
@@ -35,6 +42,7 @@ class DetailCommendPage extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: new HomePage(
         restaurantID: restaurantID,
+        tel: tel,
       ),
     );
   }
@@ -42,9 +50,13 @@ class DetailCommendPage extends StatelessWidget {
 
 class HomePage extends StatefulWidget {
   final String restaurantID;
+  final String tel;
+
+
 
   HomePage({
     this.restaurantID,
+    this.tel
   });
 
   @override
@@ -75,6 +87,15 @@ class _HomePageState extends State<HomePage>
 
   final formKey = new GlobalKey<FormState>();
   var dbHelper;
+
+  DateFormat dateFormat = new DateFormat.Hm();
+
+//  DateTime open = DateTime.now("04:00");
+//  DateTime close = DateTime.parse("21:00:00");
+  DateTime now = DateTime.now();
+
+
+
 
 ////// ALL FUNCTION
 
@@ -146,7 +167,30 @@ class _HomePageState extends State<HomePage>
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-        backgroundColor: Colors.green,
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(
+              Icons.phone_in_talk,
+              color: Colors.yellow,
+              size: 35.0,
+            ),
+            onPressed: () {
+
+              String tmp = widget.tel.toString().substring(1);
+
+
+            if(tmp.length > 0)
+              {
+
+               Tlaunch.launch("tel:+66" + tmp);
+              }
+
+
+            },
+          )
+        ],
+
+        backgroundColor: Colors.cyan,
         title: Text(globals.restaurantName.toString(),
           textAlign: TextAlign.center,
           style: TextStyle(
@@ -192,12 +236,14 @@ class _HomePageState extends State<HomePage>
         controller: _tabController,
       ),
       bottomNavigationBar: new BottomAppBar(
+        color: Colors.cyan,
         child: new Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
             new IconButton(
                 icon: new Icon(Icons.home),
+                color: Colors.white,
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -208,6 +254,7 @@ class _HomePageState extends State<HomePage>
 
             new IconButton(
                 icon: new Icon(Icons.restaurant),
+                color: Colors.white,
                 onPressed: () {
                   if (globals.restaurantID != null) {
                     if (globals.restaurantID != '') {
@@ -216,6 +263,7 @@ class _HomePageState extends State<HomePage>
                         MaterialPageRoute(
                             builder: (context) => DetailCommendPage(
                                   restaurantID: globals.restaurantID,
+                              tel:  globals.restaurantTel,
                                 )),
                       );
                     } else {}
@@ -224,6 +272,7 @@ class _HomePageState extends State<HomePage>
 
             new IconButton(
                 icon: new Icon(Icons.add_shopping_cart),
+                color: Colors.white,
                 onPressed: () {
                   if (globals.restaurantID != null) {
                     if (globals.restaurantID != '') {
@@ -237,6 +286,7 @@ class _HomePageState extends State<HomePage>
 
             new IconButton(
                 icon: new Icon(Icons.list),
+                color: Colors.white,
                 onPressed: () {
                   if (globals.restaurantID != null) {
                     if (globals.restaurantID != '') {
@@ -248,7 +298,9 @@ class _HomePageState extends State<HomePage>
                   } else {}
                 }),
 
-            new IconButton(icon: new Icon(Icons.exit_to_app), onPressed: (){
+            new IconButton(icon: new Icon(Icons.exit_to_app),
+                color: Colors.white,
+                onPressed: (){
 
               showAlert(context);
               // SystemChannels.platform.invokeMethod('SystemNavigator.pop');
@@ -457,54 +509,55 @@ class _HomePageState extends State<HomePage>
                           horizontal: 16.0,
                           vertical: 8.0,
                         ),
-                        child: new Container(
-                          child: ListTile(
-                            leading: Icon(
-                              Icons.fastfood,
-                              color: Colors.redAccent,
-                              size: 20.0,
-                            ),
-                            title: Text(
-                              menu.data[idx].foodsItems[index].foodName,
-                              style: TextStyle(fontFamily: 'Kanit'),
-                            ),
+                        child:  IgnorePointer(
+                          ignoring: globals.curfew == "1" ? true : false,
+                          child: Opacity(
+                            opacity: globals.curfew == "1" ? 0.5 : 1.0,
+                            child: Container(
+                              child: ListTile(
+                                title: Text(
+                                  menu.data[idx].foodsItems[index].foodName,
+                                  style: TextStyle(fontFamily: 'Kanit'),
+                                ),
 //                          subtitle: Text(
 //                            menu.data[idx].foodsItems[index].price.toString(),
 //                            style: TextStyle(
 //                              fontFamily: 'Kanit',
 //                            ),
 //                          ),
-                            trailing: FlatButton(
-                                color: Colors.deepOrange,
-                                textColor: Colors.white,
-                                padding:
-                                    EdgeInsets.fromLTRB(8.0, 8.0, 0.0, 8.0),
-                                child: Text(
-                                  menu.data[idx].foodsItems[index].price
-                                          .toString() +
-                                      " บาท",
-                                  style: TextStyle(
-                                    fontSize: 12.0,
-                                    fontFamily: 'Kanit',
-                                  ),
-                                ),
-                                onPressed: () => _foo(
-                                      m_foodID: menu
-                                          .data[idx].foodsItems[index].foodID
-                                          .toString(),
-                                      m_foodName: menu
-                                          .data[idx].foodsItems[index].foodName,
-                                      m_price: menu
-                                          .data[idx].foodsItems[index].price,
-                                    )),
+                                trailing: FlatButton(
+                                    color: Colors.pinkAccent,
+                                    textColor: Colors.white,
+                                    padding:
+                                        EdgeInsets.fromLTRB(8.0, 8.0, 0.0, 8.0),
+                                    child: Text(
+                                      menu.data[idx].foodsItems[index].price
+                                              .toString() +
+                                          " บาท",
+                                      style: TextStyle(
+                                        fontSize: 12.0,
+                                        fontFamily: 'Kanit',
+                                      ),
+                                    ),
+                                    onPressed: () => _foo(
+                                          m_foodID: menu
+                                              .data[idx].foodsItems[index].foodID
+                                              .toString(),
+                                          m_foodName: menu
+                                              .data[idx].foodsItems[index].foodName,
+                                          m_price: menu
+                                              .data[idx].foodsItems[index].price,
+                                        )),
+                              ),
+                              decoration: new BoxDecoration(
+                                  border: Border(
+                                      bottom: new BorderSide(
+                                color: Colors.cyan,
+                                width: 0.5,
+                                style: BorderStyle.solid,
+                              ))),
+                            ),
                           ),
-                          decoration: new BoxDecoration(
-                              border: Border(
-                                  bottom: new BorderSide(
-                            color: Colors.grey[350],
-                            width: 0.5,
-                            style: BorderStyle.solid,
-                          ))),
                         ));
                   },
                   itemCount: menu.data[idx].foodsItems.length,
@@ -512,7 +565,8 @@ class _HomePageState extends State<HomePage>
                   // todo comment this out and check the result
                   physics:
                       ClampingScrollPhysics(), // todo comment this out and check the result
-                )
+                ),
+
               ],
             ),
           );

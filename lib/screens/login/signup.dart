@@ -112,13 +112,32 @@ class _SignUpState extends State<SignUp> {
 //    _textTel.text = globals.emailFB;
 
     return Scaffold(
+
       body: SingleChildScrollView(
-        padding: EdgeInsets.fromLTRB(20, 100, 20, 10),
+        padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
         child: Form(
           key: _formKey,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
+              Container(
+                  margin: const EdgeInsets.only(left: 0.0, right: 0.0,top: 0.0),
+                  padding: EdgeInsets.fromLTRB(0.0, 25.0, 0.0, 0.0),
+                  child: Image.asset(
+                    'assets/images/CovidFoodLogoBar.png',
+                    fit: BoxFit.cover,
+//                height: 240.0,
+                  )),
+              Padding(
+                padding: const EdgeInsets.all(28.0),
+                child: Container(
+                    alignment: Alignment.topCenter,
+                    child: Image.asset(
+                      'assets/images/CovidFoodLogo1.png',
+                      width: 120.0,
+//                height: 240.0,
+                    )),
+              ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
                 child: Material(
@@ -162,10 +181,10 @@ class _SignUpState extends State<SignUp> {
                       title: TextFormField(
                         inputFormatters: [LengthLimitingTextInputFormatter(10)],
                         controller: _textTel,
+                        keyboardType: TextInputType.number,
                         decoration: InputDecoration(
                             hintText: "Telephone",
                             icon: Icon(Icons.phone),
-
                             border: InputBorder.none),
                         validator: _validateTel,
                         onSaved: (String value) {
@@ -217,7 +236,7 @@ class _SignUpState extends State<SignUp> {
                 padding: const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
                 child: Material(
                     borderRadius: BorderRadius.circular(20.0),
-                    color: Colors.green,
+                    color: Colors.pinkAccent,
                     elevation: 0.0,
                     child: MaterialButton(
                       onPressed: _submit,

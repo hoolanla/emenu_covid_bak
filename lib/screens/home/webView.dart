@@ -1,8 +1,8 @@
 import 'dart:async';
-
+import 'dart:io';
 import 'package:flutter/material.dart';
-
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
+import 'package:emenu_covid/services/AlertForm.dart';
 
 const kAndroidUserAgent =
     'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Mobile Safari/537.36';
@@ -182,6 +182,12 @@ class _MyHomePageState extends State<WebView_Flutter> {
                     icon: Icon(Icons.refresh),
                     onPressed: () {
                       flutterWebViewPlugin.reload();
+                    },
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.exit_to_app),
+                    onPressed: () {
+                      exit(0);
                     },
                   ),
                 ],

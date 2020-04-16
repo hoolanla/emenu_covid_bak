@@ -487,8 +487,6 @@ class _ShowData extends State<newOrder> {
                             String _All = '';
                             _All = _Header + jsonBody + _Tail;
 
-                            print(_All);
-
                             ttt(_All);
                           },
                         ),
@@ -653,6 +651,7 @@ class _ShowData extends State<newOrder> {
             children: <Widget>[
               new IconButton(
                   icon: new Icon(Icons.home),
+                  color: Colors.white,
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -663,6 +662,7 @@ class _ShowData extends State<newOrder> {
 
               new IconButton(
                   icon: new Icon(Icons.restaurant),
+                  color: Colors.white,
                   onPressed: () {
                     if (globals.restaurantID != null) {
                       if (globals.restaurantID != '') {
@@ -683,6 +683,7 @@ class _ShowData extends State<newOrder> {
 
               new IconButton(
                   icon: new Icon(Icons.list),
+                  color: Colors.white,
                   onPressed: () {
                     if (globals.restaurantID != null) {
                       if (globals.restaurantID != '') {
@@ -701,6 +702,7 @@ class _ShowData extends State<newOrder> {
 
               new IconButton(
                   icon: new Icon(Icons.exit_to_app),
+                  color: Colors.white,
                   onPressed: () {
                     _LogOut();
                   }),
@@ -776,7 +778,7 @@ class _ShowData extends State<newOrder> {
 
   void _dialogResult(String str) {
     if (str == 'Accept') {
-      print('Accept');
+
     } else {
       Navigator.of(context).pop();
     }
@@ -813,6 +815,7 @@ class _ShowData extends State<newOrder> {
             onPressed: () => _dialogResult('Cancel'), child: Text('Cancel')),
         FlatButton(
             onPressed: () {
+
               _dialogResult('Accept');
             },
             child: Text('Accept'))
@@ -868,7 +871,6 @@ class _ShowData extends State<newOrder> {
   }
 
   void ttt(String strAll) async {
-    print('================> ' + strAll);
 
     var feed = await NetworkFoods.inSertOrder(strBody: strAll);
     var data = DataFeed(feed: feed);

@@ -61,3 +61,27 @@ showAlert(BuildContext context) {
     ],
   ).show();
 }
+
+showAlertFirstRun(BuildContext context) {
+  Alert(
+    context: context,
+    type: AlertType.none,
+    title: "COVID-19",
+    desc: "เนื่องด้วยสถานการณ์โควิดที่เกินขึ้นตอนนี้ APP จะเปิดให้สั่งอาหารได้เฉพาะ ช่วงเวลา 21:00 - 04:00",
+    style: alertStyle,
+    buttons: [
+      DialogButton(
+          child: Text(
+            "OK",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 12,
+              fontFamily: 'Kanit',
+            ),
+          ),
+          onPressed: () {
+            Navigator.of(context, rootNavigator: true).pop();
+          }),
+    ],
+  ).show();
+}

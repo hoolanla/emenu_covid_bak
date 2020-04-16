@@ -6,6 +6,7 @@ import 'dart:async';
 import 'package:emenu_covid/screens/home/FirstPage.dart';
 import 'package:emenu_covid/screens/Json/foods.dart';
 import 'package:emenu_covid/sqlite/db_helper.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:emenu_covid/services/authService.dart';
 import 'package:emenu_covid/globals.dart' as globals;
@@ -14,7 +15,9 @@ import 'package:emenu_covid/models/logout.dart';
 import 'package:emenu_covid/screens/home/profile.dart';
 import 'package:emenu_covid/screens/home/DetailCommendPage.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:emenu_covid/services/AlertForm.dart';
 import 'dart:convert';
+import 'package:condition/condition.dart';
 
 int foodsID;
 String foodsName;
@@ -42,13 +45,43 @@ class FirstPage extends StatefulWidget {
 
 class _ShowData extends State<FirstPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-
   var dbHelper;
 
   @override
   void initState() {
     super.initState();
     dbHelper = DatabaseHelper();
+    _checkDateTimeCurfuse();
+  }
+
+  _checkDateTimeCurfuse() {
+    String DateTimeformatted1;
+    String DateTimeformatted2;
+
+    format(Duration d) => d.toString().split('.').first.padLeft(8, "0");
+    final tClose = Duration(hours: 21, minutes: 00); //
+    final tOpen = Duration(hours: 04, minutes: 00); //
+
+    var now = new DateTime.now();
+    var formatter = new DateFormat('yyyy-MM-dd');
+    String Dateformatted = formatter.format(now);
+
+    DateTimeformatted1 = Dateformatted + ' ' + tClose.toString();
+    DateTimeformatted2 = Dateformatted + ' ' + format(tOpen);
+    DateTime dtClose = DateTime.parse(DateTimeformatted1);
+    DateTime dtOpen = DateTime.parse(DateTimeformatted2);
+
+    if (DateTime.now().isAfter(dtClose) &&
+        DateTime.now().isBefore(dtOpen.add(new Duration(days: 1)))) {
+      globals.curfew = "1";
+      if (globals.showDialogFirstRun == "0") {
+        globals.showDialogFirstRun == "1";
+        WidgetsBinding.instance
+            .addPostFrameCallback((_) => _onAlertFirstRun(context));
+      }
+    } else {
+      globals.curfew = "0";
+    }
   }
 
   listRestaurant() {
@@ -69,8 +102,8 @@ class _ShowData extends State<FirstPage> {
                     children: <Widget>[
                       SizedBox(
                         child: CircularProgressIndicator(),
-                        height: 10.0,
-                        width: 10.0,
+                        height: 0.0,
+                        width: 0.0,
                       )
                     ],
                   ),
@@ -85,8 +118,8 @@ class _ShowData extends State<FirstPage> {
                   children: <Widget>[
                     SizedBox(
                       child: CircularProgressIndicator(),
-                      height: 10.0,
-                      width: 10.0,
+                      height: 0.0,
+                      width: 0.0,
                     )
                   ],
                 ),
@@ -98,13 +131,31 @@ class _ShowData extends State<FirstPage> {
     );
   }
 
+  var alertStyleFirstRun = AlertStyle(
+    animationType: AnimationType.fromTop,
+    isCloseButton: true,
+    isOverlayTapDismiss: true,
+    descStyle: TextStyle(
+        fontWeight: FontWeight.normal, fontFamily: 'Kanit', fontSize: 14),
+    animationDuration: Duration(milliseconds: 400),
+//
+//    alertBorder: RoundedRectangleBorder(
+//      borderRadius: BorderRadius.circular(10.0),
+//      side: BorderSide(
+//        color: Colors.grey,
+//      ),
+//    ),
+    titleStyle: TextStyle(
+      color: Colors.red,
+    ),
+  );
   var alertStyle = AlertStyle(
     animationType: AnimationType.fromTop,
     isCloseButton: false,
     isOverlayTapDismiss: false,
-    descStyle: TextStyle(fontWeight: FontWeight.normal,fontFamily: 'Kanit',fontSize: 14),
+    descStyle: TextStyle(
+        fontWeight: FontWeight.normal, fontFamily: 'Kanit', fontSize: 14),
     animationDuration: Duration(milliseconds: 400),
-
     alertBorder: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(10.0),
       side: BorderSide(
@@ -115,6 +166,7 @@ class _ShowData extends State<FirstPage> {
       color: Colors.red,
     ),
   );
+
 
   _onAlert(context) {
     Alert(
@@ -136,6 +188,7 @@ class _ShowData extends State<FirstPage> {
             onPressed: () {
               globals.restaurantID = globals.tmpRestaurantID;
               globals.currentRestaurant = globals.tmpRestaurantID;
+              globals.restaurantTel = globals.newRestaurantTel;
               Navigator.of(context, rootNavigator: true)
                   .pushNamed('/FirstPage');
             }),
@@ -155,13 +208,14 @@ class _ShowData extends State<FirstPage> {
             globals.restaurantID = globals.newRestaurantID;
             globals.currentRestaurant = globals.newRestaurantID;
             globals.restaurantName = globals.newRestaurantName.toString();
+            globals.restaurantTel = globals.newRestaurantTel;
             globals.hasMyOrder = "0";
-            print('New ' + globals.newRestaurantID.toString());
             Navigator.of(context, rootNavigator: true).push(
               CupertinoPageRoute<bool>(
                 fullscreenDialog: true,
-                builder: (BuildContext context) => DetailCommendPage(
-                  restaurantID: globals.newRestaurantID.toString(),
+                builder: (BuildContext context) => DetailCommendPage(restaurantID: globals.newRestaurantID.toString(),
+                  tel: globals.restaurantTel.toString(),
+
                 ),
               ),
             );
@@ -174,33 +228,57 @@ class _ShowData extends State<FirstPage> {
     ).show();
   }
 
+  _onAlertFirstRun(context) {
+    Alert(
+      context: context,
+      type: AlertType.none,
+      title: "COVID-19",
+      desc:
+          "เนื่องด้วยสถานการณ์โควิดที่เกินขึ้นตอน APP จะเปิดให้สั่งอาหารได้เฉพาะ ช่วงเวลา 21:00 - 04:00",
+      style: alertStyleFirstRun,
+      buttons: [
+        DialogButton(
+            child: Text(
+              "OK",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 12,
+                fontFamily: 'Kanit',
+              ),
+            ),
+            color: Colors.pinkAccent,
+            onPressed: () {
+              globals.showDialogFirstRun = "1";
+
+              Navigator.of(context, rootNavigator: true)
+                  .pushNamed('/FirstPage');
+            }),
+      ],
+    ).show();
+  }
 
   Widget HeaderColumn() {
     return new Container(
-      height: 1.5,
+      height: 0,
       child: new ListTile(
         onTap: null,
       ),
     );
   }
-  Widget _listCard({Restaurant Mrestaurant}) => ListView.separated(
-    separatorBuilder: (context,idx) => SizedBox(
-      height: 3,
 
-    ),
+  Widget _listCard({Restaurant Mrestaurant}) => ListView.separated(
+      separatorBuilder: (context, idx) => SizedBox(
+            height: 10,
+          ),
       itemCount: Mrestaurant.data.length,
       itemBuilder: (context, idx) {
         return ClipRRect(
-
           borderRadius: BorderRadius.circular(15),
-
           child: Container(
-            margin: const EdgeInsets.only(left: 2,right: 2),
+            margin: const EdgeInsets.only(left: 2, right: 2),
             child: Container(
-
-              color: Colors.orange[100],
+              color: Colors.yellow,
               child: Stack(
-
                 children: <Widget>[
                   Container(
                     height: 200.0,
@@ -232,13 +310,11 @@ class _ShowData extends State<FirstPage> {
                     left: 8.0,
                     bottom: 0.0,
                     child: Row(
-
-                    //  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      //  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         SizedBox(
                           width: 270,
                           child: Column(
-
                             children: <Widget>[
                               Row(
                                 children: <Widget>[
@@ -287,95 +363,74 @@ class _ShowData extends State<FirstPage> {
                                       color: Colors.white,
                                     ),
                                   ),
+                                  Text(
+                                    '  ${Mrestaurant.data[idx].open_time.toString().substring(0, 5)} - ${Mrestaurant.data[idx].close_time.toString().substring(0, 5)}',
+                                    style: TextStyle(
+                                      fontFamily: 'Kanit',
+                                      color: Colors.deepOrangeAccent,
+                                    ),
+                                  ),
                                 ],
                               ),
                             ],
                           ),
                         ),
-
-                   SizedBox(
-                     width: 70,
-
-                     child: ButtonTheme(
-
+                        SizedBox(
+                          width: 70,
+                          child: ButtonTheme(
                             height: 25,
                             minWidth: 80,
                             child: FlatButton(
-                              color: Colors.deepOrange,
+                              color: Colors.pinkAccent,
                               textColor: Colors.white,
                               disabledColor: Colors.grey,
                               disabledTextColor: Colors.black,
                               padding: EdgeInsets.all(5.0),
-                              splashColor: Colors.deepOrange,
+                              splashColor: Colors.grey,
                               shape: new RoundedRectangleBorder(
                                 borderRadius: new BorderRadius.circular(30.0),
                               ),
                               onPressed: () {
-                                print('Step1 ==');
-                                print('curent ==' + globals.currentRestaurant.toString());
-                                print('restID ==' + globals.restaurantID.toString());
-                                print('name ==' + globals.restaurantName.toString());
-                                print('========================');
-
                                 if (["", null, false, 0].contains(globals.currentRestaurant)) {
-
-
                                   globals.restaurantName = Mrestaurant.data[idx].restaurantName.toString();
                                   globals.restaurantID = Mrestaurant.data[idx].restaurantID.toString();
                                   globals.currentRestaurant = Mrestaurant.data[idx].restaurantID.toString();
-                                  print('Step2 current null ==');
-                                  print('curent ==' + globals.currentRestaurant.toString());
-                                  print('restID ==' + globals.restaurantID.toString());
-                                  print('name ==' + globals.restaurantName.toString());
-                                  print('========================');
-
+                                  globals.restaurantTel = Mrestaurant.data[idx].tel.toString();
 
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => DetailCommendPage(
-                                        restaurantID:
-                                        Mrestaurant.data[idx].restaurantID.toString(),
+                                        restaurantID: Mrestaurant.data[idx].restaurantID.toString(),
+                                        tel: Mrestaurant.data[idx].tel.toString(),
                                       ),
                                     ),
                                   );
-
-
                                 } else {
-
-                                  if (globals.currentRestaurant.toString() != Mrestaurant.data[idx].restaurantID.toString() && globals.hasMyOrder == "1") {
-
-                                    print('step 3  If diff');
-                                    print('curent ==' + globals.currentRestaurant.toString());
-                                    print('new  ==' + Mrestaurant.data[idx].restaurantID.toString());
-                                    print('restID ==' + globals.restaurantID.toString());
-                                    print('name ==' + globals.restaurantName.toString());
-                                    print('========================');
-
+                                  if (globals.currentRestaurant.toString() != Mrestaurant.data[idx].restaurantID.toString() && globals.hasMyOrder == "1")
+                                  {
                                     globals.tmpRestaurantID = globals.currentRestaurant.toString();
                                     globals.newRestaurantID = Mrestaurant.data[idx].restaurantID.toString();
                                     globals.newRestaurantName = Mrestaurant.data[idx].restaurantName.toString();
+                                    globals.newRestaurantTel = Mrestaurant.data[idx].tel.toString();
                                     _onAlert(context);
-                                  }
-                                  else
-                                  {
+                                  } else {
                                     globals.restaurantID = Mrestaurant.data[idx].restaurantID.toString();
                                     globals.restaurantName = Mrestaurant.data[idx].restaurantName.toString();
                                     globals.currentRestaurant = Mrestaurant.data[idx].restaurantID.toString();
+                                    globals.restaurantTel = Mrestaurant.data[idx].tel.toString();
 
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => DetailCommendPage(
-                                          restaurantID:
-                                          Mrestaurant.data[idx].restaurantID,
+                                          restaurantID: Mrestaurant.data[idx].restaurantID,
+                                          tel: Mrestaurant.data[idx].tel,
                                         ),
                                       ),
                                     );
                                   }
                                 }
-
-
                               },
                               child: Text(
                                 "รายละเอียด",
@@ -386,7 +441,7 @@ class _ShowData extends State<FirstPage> {
                               ),
                             ),
                           ),
-                   )
+                        )
                       ],
                     ),
                   )
@@ -400,27 +455,21 @@ class _ShowData extends State<FirstPage> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: new AppBar(
-        backgroundColor: Colors.green,
-        title: new Text(
-          'COVID FOOD',
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.normal,
-            fontSize: 20.0,
-            fontFamily: 'Kanit',
-          ),
-        ),
-      ),
       body: new Container(
-
         child: new Column(
           mainAxisAlignment: MainAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           verticalDirection: VerticalDirection.down,
           children: <Widget>[
-            HeaderColumn(),
+            Container(
+                margin: const EdgeInsets.only(left: 0.0, right: 0.0, top: 0.0),
+                padding: EdgeInsets.fromLTRB(0.0, 24.0, 0.0, 0.0),
+                child: Image.asset(
+                  'assets/images/CovidFoodLogoBar.png',
+                  fit: BoxFit.cover,
+             //  height: 240.0,
+                )),
+            // HeaderColumn(),
             listRestaurant(),
           ],
         ),

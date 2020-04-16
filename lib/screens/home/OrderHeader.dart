@@ -14,16 +14,9 @@ import 'package:emenu_covid/models/logout.dart';
 import 'package:emenu_covid/services/AlertForm.dart';
 
 
-//String _restaurantID = globals.restaurantID;
-//String _tableID = globals.tableID;
-//String _userID = globals.userID;
-
-Future<List<Order>> orders;
 Future<ResultOrderHeader> resultOrderHeader;
-List<Order> _order;
-Future<double> _totals;
 Future<double> _totalsCheckbill;
-Future<String> _jsonBody;
+
 String jsonBody;
 
 Future<RetStatusInsertOrder> retInsert;
@@ -55,43 +48,14 @@ class _ShowData extends State<OrderHeader> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   String strBody =
-      '{"restaurantID":"${globals.restaurantID}","userID":"${globals.userID}","status":"1"}';
-
-  _showAlertDialog({String strError}) async {
-    showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) {
-          return AlertDialog(
-            title: Text(strError),
-            content: Text(""),
-            actions: <Widget>[
-              FlatButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => OrderHeader()),
-                  );
-                },
-                child: Text("OK"),
-              )
-            ],
-          );
-        });
-  }
-
-//  final formKey = new GlobalKey<FormState>();
+      '{"restaurantID":"","userID":"${globals.userID}","status":""}';
   var dbHelper;
   bool isUpdating;
-
   @override
   void initState() {
     super.initState();
-
     dbHelper = DatabaseHelper();
-
     refreshOrderHeader();
-    refreshJsonBody();
     refreshTotalHeader();
   }
 
@@ -115,15 +79,6 @@ class _ShowData extends State<OrderHeader> {
 
     });
   }
-
-  refreshJsonBody() {
-    setState(() {
-      _jsonBody = dbHelper.getJsonOrder();
-    });
-  }
-
-  //CODE HERE
-
   void _showAlertDialog2({String strError}) async {
     showDialog(
         context: context,
@@ -150,7 +105,7 @@ class _ShowData extends State<OrderHeader> {
   Widget _ListSectionStatus({ResultOrderHeader menu}) => ListView.builder(
         itemBuilder: (context, int idx) {
           return Padding(
-            padding: EdgeInsets.symmetric(vertical: 16.0),
+            padding: EdgeInsets.symmetric(vertical: 1.0),
             child: Column(
               children: <Widget>[
                 Padding(
@@ -171,11 +126,6 @@ class _ShowData extends State<OrderHeader> {
                           ),
                         );
                       },
-                      leading: Icon(
-                        Icons.fastfood,
-                        size: 20,
-                        color: Colors.redAccent,
-                      ),
                       title: Text(
                         'ร้าน: ' +
                             menu.orderHeaderList[idx].restaurant_name
@@ -198,45 +148,21 @@ class _ShowData extends State<OrderHeader> {
                               )
                             ],
                           ),
-//                          new Row(
-//                            children: <Widget>[
-//                              Padding(
-//                                padding: const EdgeInsets.all(0.0),
-//                                child: Text(
-//                                  'CANCEL: ',
-//                                  style: TextStyle(
-//                                    fontFamily: 'Kanit',
-//                                  ),
-//                                ),
-//                              ),
-//                              Padding(
-//                                padding: const EdgeInsets.all(0.0),
-//                                child: IconButton(
-//                                  icon: Icon(
-//                                    Icons.delete,
-//                                    color: Colors.red,
-//                                  ),
-//                                  onPressed: () {
-//                                    SendtoJsonCancel(
-//                                        orderID: menu.orderList[idx].orderID);
-//                                  },
-//                                ),
-//                              ),
-//                            ],
-//                          )
                         ],
                       ),
                       trailing: Text(
                         menu.orderHeaderList[idx].status.toString(),
                         style: TextStyle(
                           fontFamily: 'Kanit',
+                          color: Colors.green,
+                          fontWeight: FontWeight.bold
                         ),
                       ),
                     ),
                     decoration: new BoxDecoration(
                       border: Border(
                         bottom: new BorderSide(
-                          color: Colors.grey[350],
+                          color: Colors.cyan,
                           width: 0.5,
                           style: BorderStyle.solid,
                         ),
@@ -279,18 +205,10 @@ class _ShowData extends State<OrderHeader> {
     );
   }
 
-
   Widget _noOrder() {
     return new Card(
-//      child: null,
-//      shape: RoundedRectangleBorder(
-//        borderRadius: BorderRadius.circular(10.0),
-//      ),
-//      elevation: 5,
-//      margin: EdgeInsets.all(10),
         );
   }
-
   headerListOrder() {
     return Text(
       'ORDER',
@@ -298,7 +216,6 @@ class _ShowData extends State<OrderHeader> {
           color: Colors.green, fontSize: 18.0, fontWeight: FontWeight.bold),
     );
   }
-
   headerStatusOrder() {
     return Text(
       'STATUS ORDER',
@@ -307,17 +224,13 @@ class _ShowData extends State<OrderHeader> {
     );
   }
 
-  /// CODE1
-
   listStatusOrder() {
     return Expanded(
       child: FutureBuilder<ResultOrderHeader>(
           future: resultOrderHeader,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-
               if (snapshot.data != null) {
-
                 if (snapshot.data.ResultOk == "false") {
                   return _noOrder();
                 }
@@ -371,7 +284,6 @@ class _ShowData extends State<OrderHeader> {
           }),
     );
   }
-
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -383,7 +295,7 @@ class _ShowData extends State<OrderHeader> {
             fontFamily: 'Kanit',
           ),
         ),
-        backgroundColor: Colors.green,
+        backgroundColor: Colors.cyan,
         title: new Text(
           'รายการอาหารที่สั่ง',
           textAlign: TextAlign.center,
@@ -406,14 +318,14 @@ class _ShowData extends State<OrderHeader> {
             Row(children: <Widget>[
               Expanded(
                 child: new RaisedButton(
-                  color: Colors.white,
+                  color: Colors.pinkAccent,
                   child: FutureBuilder(
                       future: _totalsCheckbill,
                       builder: (context, snapshot) {
                         return Text(
                           'รวมราคา  ${snapshot.data.toString().replaceAll('.0', '')} บาท',
                           style: TextStyle(
-                            color: Colors.black,
+                            color: Colors.white,
                             fontFamily: 'Kanit',
                           ),
                         );
@@ -426,29 +338,28 @@ class _ShowData extends State<OrderHeader> {
                   },
                 ),
               ),
-
             ])
-
           ],
         ),
       ),
       bottomNavigationBar: new BottomAppBar(
+        color: Colors.cyan,
         child: new Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
             new IconButton(
                 icon: new Icon(Icons.home),
+                color: Colors.white,
                 onPressed: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => FirstPage()),
                   );
                 }),
-            //   new IconButton(icon: new Text('SAVE'), onPressed: null),
-
             new IconButton(
                 icon: new Icon(Icons.restaurant),
+                color: Colors.white,
                 onPressed: () {
                   if (globals.restaurantID != null) {
                     if (globals.restaurantID != '') {
@@ -457,6 +368,7 @@ class _ShowData extends State<OrderHeader> {
                         MaterialPageRoute(
                             builder: (context) => DetailCommendPage(
                               restaurantID: globals.restaurantID,
+                              tel: globals.restaurantTel,
                             )),
                       );
                     } else {}
@@ -465,6 +377,7 @@ class _ShowData extends State<OrderHeader> {
 
             new IconButton(
                 icon: new Icon(Icons.add_shopping_cart),
+                color: Colors.white,
                 onPressed: () {
                   if (globals.restaurantID != null) {
                     if (globals.restaurantID != '') {
@@ -477,6 +390,7 @@ class _ShowData extends State<OrderHeader> {
                 }),
             new IconButton(
                 icon: new Icon(Icons.list),
+                color: Colors.white,
                 onPressed: () {
                   if (globals.restaurantID != null) {
                     if (globals.restaurantID != '') {
@@ -487,76 +401,18 @@ class _ShowData extends State<OrderHeader> {
                     } else {}
                   } else {}
                 }),
-
             new IconButton(
                 icon: new Icon(Icons.exit_to_app),
+                color: Colors.white,
                 onPressed: () {
                   showAlert(context);
-
                 }),
-
           ],
         ),
       ),
     );
   }
 
-  void _LogOut() async {
-    if (globals.tableID != null && globals.tableID != '') {
-      String strBody =
-          '{"userID":"${globals.userID}","tableID":"${globals.tableID}"}';
-      var feed = await NetworkFoods.loadLogout(strBody);
-      var data = DataFeedLogout(feed: feed);
-      if (data.feed.ResultOk == "false") {
-        _showAlertLogout(data.feed.ErrorMessage);
-      } else {
-        globals.tableID = '';
-        globals.restaurantID = '';
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => FirstPage()),
-        );
-      }
-    } else {
-      globals.tableID = '';
-      globals.restaurantID = '';
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => FirstPage()),
-      );
-    }
-  }
-
-  void _dialogResult(String str) {
-    if (str == 'Accept') {
-      print('Accept');
-    } else {
-      Navigator.of(context).pop();
-    }
-  }
-
-  _showAlertLogout(String strLogOut) async {
-    showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('ยังไม่สามารถ Logout ได้ ' + strLogOut),
-            content: Text(""),
-            actions: <Widget>[
-              FlatButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => OrderHeader()),
-                  );
-                },
-                child: Text("OK"),
-              )
-            ],
-          );
-        });
-  }
 
 
 }

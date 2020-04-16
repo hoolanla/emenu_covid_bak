@@ -134,7 +134,7 @@ class _ShowData extends State<OrderDetail> {
   Widget _ListSectionStatus({ResultOrderDetail menu}) => ListView.builder(
         itemBuilder: (context, int idx) {
           return Padding(
-            padding: EdgeInsets.symmetric(vertical: 16.0),
+            padding: EdgeInsets.symmetric(vertical: 1.0),
             child: Column(
               children: <Widget>[
                 Padding(
@@ -144,11 +144,7 @@ class _ShowData extends State<OrderDetail> {
                   ),
                   child: Container(
                     child: new ListTile(
-                      leading: Icon(
-                        Icons.fastfood,
-                        size: 20,
-                        color: Colors.redAccent,
-                      ),
+
                       title: Text(
                         menu.orderList[idx].foodsName.toString(),
                         style: TextStyle(
@@ -217,7 +213,7 @@ class _ShowData extends State<OrderDetail> {
                     decoration: new BoxDecoration(
                       border: Border(
                         bottom: new BorderSide(
-                          color: Colors.grey[350],
+                          color: Colors.cyan,
                           width: 0.5,
                           style: BorderStyle.solid,
                         ),
@@ -323,13 +319,8 @@ class _ShowData extends State<OrderDetail> {
     return new Scaffold(
       appBar: new AppBar(
         textTheme: TextTheme(
-          title: TextStyle(
-            color: Colors.black,
-            fontSize: 20.0,
-            fontFamily: 'Kanit',
-          ),
         ),
-        backgroundColor: Colors.green,
+        backgroundColor: Colors.cyan,
         title: new Text(
           'รายละเอียด',
           textAlign: TextAlign.center,
@@ -352,14 +343,14 @@ class _ShowData extends State<OrderDetail> {
             Row(children: <Widget>[
               Expanded(
                 child: new RaisedButton(
-                  color: Colors.white,
+                  color: Colors.pinkAccent,
                   child: FutureBuilder(
                       future: _totals,
                       builder: (context, snapshot) {
                         return Text(
                           'รวมราคา  ${snapshot.data.toString().replaceAll('.0', '')} บาท',
                           style: TextStyle(
-                            color: Colors.black,
+                            color: Colors.white,
                             fontFamily: 'Kanit',
                           ),
                         );
@@ -372,12 +363,14 @@ class _ShowData extends State<OrderDetail> {
         ),
       ),
       bottomNavigationBar: new BottomAppBar(
+        color: Colors.cyan,
         child: new Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
             new IconButton(
                 icon: new Icon(Icons.home),
+                color: Colors.white,
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -388,6 +381,7 @@ class _ShowData extends State<OrderDetail> {
 
             new IconButton(
                 icon: new Icon(Icons.restaurant),
+                color: Colors.white,
                 onPressed: () {
                   if (globals.restaurantID != null) {
                     if (globals.restaurantID != '') {
@@ -396,6 +390,7 @@ class _ShowData extends State<OrderDetail> {
                         MaterialPageRoute(
                             builder: (context) => DetailCommendPage(
                                   restaurantID: globals.restaurantID,
+                              tel: globals.restaurantTel,
                                 )),
                       );
                     } else {}
@@ -404,6 +399,7 @@ class _ShowData extends State<OrderDetail> {
 
             new IconButton(
                 icon: new Icon(Icons.add_shopping_cart),
+                color: Colors.white,
                 onPressed: () {
                   if (globals.restaurantID != null) {
                     if (globals.restaurantID != '') {
@@ -417,6 +413,7 @@ class _ShowData extends State<OrderDetail> {
 
             new IconButton(
                 icon: new Icon(Icons.list),
+                color: Colors.white,
                 onPressed: () {
                   if (globals.restaurantID != null) {
                     if (globals.restaurantID != '') {
@@ -428,7 +425,9 @@ class _ShowData extends State<OrderDetail> {
                   } else {}
                 }),
 
-            new IconButton(icon: new Icon(Icons.exit_to_app), onPressed: () {
+            new IconButton(icon: new Icon(Icons.exit_to_app),
+                color: Colors.white,
+                onPressed: () {
               showAlert(context);
             //  SystemChannels.platform.invokeMethod('SystemNavigator.pop');
             }),
@@ -494,7 +493,6 @@ class _ShowData extends State<OrderDetail> {
 
   void _dialogResult(String str) {
     if (str == 'Accept') {
-      print('Accept');
     } else {
       Navigator.of(context).pop();
     }
@@ -563,7 +561,6 @@ class _ShowData extends State<OrderDetail> {
   }
 
   void ttt(String strAll) async {
-    print('================> ' + strAll);
 
     var feed = await NetworkFoods.inSertOrder(strBody: strAll);
     var data = DataFeed(feed: feed);

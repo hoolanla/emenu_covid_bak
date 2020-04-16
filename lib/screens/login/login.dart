@@ -109,6 +109,7 @@ class _SignUpState extends State<Login> {
         globals.lastName = feed.lastname.toString();
         globals.fullName = feed.userName.toString();
         globals.hasMyOrder = "0";
+        globals.showDialogFirstRun = "0";
         dbHelper.deleteAll();
 
         Navigator.push(context,
@@ -139,16 +140,25 @@ class _SignUpState extends State<Login> {
 
     double height = MediaQuery.of(context).size.height / 3;
     return Scaffold(
+
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            Container(
+                margin: const EdgeInsets.only(left: 0.0, right: 0.0,top: 0.0),
+                padding: EdgeInsets.fromLTRB(0.0, 25.0, 0.0, 0.0),
+                child: Image.asset(
+                  'assets/images/CovidFoodLogoBar.png',
+                  fit: BoxFit.cover,
+//                height: 240.0,
+                )),
             Padding(
               padding: const EdgeInsets.all(28.0),
               child: Container(
                   alignment: Alignment.topCenter,
                   child: Image.asset(
-                    'assets/images/logo.png',
+                    'assets/images/CovidFoodLogo1.png',
                     width: 120.0,
 //                height: 240.0,
                   )),
@@ -172,7 +182,9 @@ class _SignUpState extends State<Login> {
                                 padding: const EdgeInsets.only(left: 12.0),
                                 child: ListTile(
                                   title: TextFormField(
-                                    inputFormatters: [LengthLimitingTextInputFormatter(10)],
+                                    keyboardType: TextInputType.number,
+                                    inputFormatters: [LengthLimitingTextInputFormatter(10),
+                                    WhitelistingTextInputFormatter.digitsOnly],
                                     decoration: InputDecoration(
                                       border: InputBorder.none,
                                       hintText: 'Telephone',
@@ -233,7 +245,7 @@ class _SignUpState extends State<Login> {
                                 const EdgeInsets.fromLTRB(14.0, 8.0, 14.0, 8.0),
                             child: Material(
                                 borderRadius: BorderRadius.circular(20.0),
-                                color: Colors.green,
+                                color: Colors.pinkAccent,
                                 elevation: 0.0,
                                 child: MaterialButton(
                                   onPressed: _submit,
