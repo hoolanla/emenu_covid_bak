@@ -5,6 +5,7 @@ import 'package:validators/validators.dart';
 import 'package:emenu_covid/models/register.dart';
 import 'package:emenu_covid/screens/Json/foods.dart';
 import 'package:emenu_covid/globals.dart' as globals;
+import 'package:emenu_covid/services/AlertForm.dart';
 
 
 class SignUp extends StatefulWidget {
@@ -94,9 +95,15 @@ class _SignUpState extends State<SignUp> {
       if (data.feed.ResultOk == "true") {
 
         globals.userID = data.feed.ReturnMessage;
-        _showAlertDialogComplete(strReturn: 'Account is registration success. ',strContent: 'Thank you');
+        AlertService tmp = new AlertService(title: 'ลงทะเบียนสำเร็จ',desc: '');
+        tmp.showAlertRegisSuccess(context);
+    //  showAlertRegisSuccess(context);
+     //   _showAlertDialogComplete(strReturn: 'Account is registration success. ',strContent: 'Thank you');
       } else {
-        _showAlertDialogNotComplete(strReturn: data.feed.ErrorMessage,strContent: 'Please try again.');
+        AlertService tmp = new AlertService(title: 'ลงทะเบียนไม่สำเร็จ',desc: data.feed.ErrorMessage.toString());
+        tmp.showAlertRegisSuccessFalse(context);
+      //  showAlertRegisSuccessFalse(context);
+      //  _showAlertDialogNotComplete(strReturn: data.feed.ErrorMessage,strContent: 'Please try again.');
       }
     }
 

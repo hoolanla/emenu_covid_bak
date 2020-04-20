@@ -1,5 +1,4 @@
 library emenu_covid.globals;
-
 String  restaurantID;
 String  tableID;
 String  tableName;
@@ -22,3 +21,4 @@ String  showDialogFirstRun;
 String  curfew;
 String  restaurantTel;
 String  newRestaurantTel;
+String  typeUser; // 1 = user 2 = admin

@@ -1,6 +1,4 @@
-import 'dart:io';
 
-import 'package:emenu_covid/screens/home/TakeOutOrder.dart';
 import 'package:flutter/material.dart';
 import 'package:emenu_covid/models/order.dart';
 import 'dart:async';
@@ -534,7 +532,10 @@ class _ShowData extends State<MyOrder> {
                 icon: new Icon(Icons.exit_to_app),
                 color: Colors.white,
                 onPressed: (){
-                  showAlert(context);
+
+                  AlertService tmp = new AlertService(title: 'Are you sure ?',desc: 'คุณต้องการออกจาก Application ใช่ไหม');
+                  tmp.showAlertExit(context);
+                //  showAlert(context);
                 }),
 
           ],

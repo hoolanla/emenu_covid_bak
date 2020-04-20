@@ -301,8 +301,9 @@ class _HomePageState extends State<HomePage>
             new IconButton(icon: new Icon(Icons.exit_to_app),
                 color: Colors.white,
                 onPressed: (){
-
-              showAlert(context);
+    AlertService tmp = new AlertService(title: 'Are you sure ?',desc: 'คุณต้องการออกจาก Application ใช่ไหม');
+    tmp.showAlertExit(context);
+             // showAlert(context);
               // SystemChannels.platform.invokeMethod('SystemNavigator.pop');
             }),
           ],

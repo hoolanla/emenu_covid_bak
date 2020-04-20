@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:emenu_covid/models/foods.dart';
 import 'package:emenu_covid/models/order.dart';
 import 'package:emenu_covid/models/login.dart';
+import 'package:emenu_covid/models/orderDetailToday.dart';
+import 'package:emenu_covid/models/orderHeaderToday.dart';
 import 'package:emenu_covid/models/profile.dart';
 import 'package:emenu_covid/models/register.dart';
 import 'package:emenu_covid/models/bill.dart';
@@ -11,6 +13,7 @@ import 'package:emenu_covid/models/history.dart';
 import 'package:emenu_covid/models/logout.dart';
 import 'package:emenu_covid/models/orderHeader.dart';
 import 'package:emenu_covid/models/orderDetail.dart';
+import 'package:emenu_covid/models/flagDelivery.dart';
 import 'package:http/http.dart' as http;
 import 'package:emenu_covid/globals.dart' as globals;
 
@@ -130,6 +133,23 @@ class NetworkFoods {
     return _ResultOrderHeader;
   }
 
+
+  static Future<ResultOrderHeaderToday> loadOrderHeaderToday(String strBody) async {
+
+    print(strBody);
+    String url = 'http://103.82.248.128/eMenuAPI/api/eMenu/DelGetOrderHeaderToday';
+    var response = await http.post('$url',
+        headers: {"Content-Type": "application/json"}, body: strBody);
+    final jsonResponse = json.decode(response.body.toString());
+    if (jsonResponse.toString().contains('false')) {}
+    ResultOrderHeaderToday _ResultOrderHeader = new ResultOrderHeaderToday.fromJson(jsonResponse);
+
+    print(jsonResponse.toString());
+
+    return _ResultOrderHeader;
+  }
+
+
   static Future<double> loadTotalOrderDetail(String strBody) async {
     String url = 'http://103.82.248.128/eMenuAPI/api/eMenu/DelGetOrderDetail';
     var response = await http.post('$url',
@@ -156,6 +176,16 @@ class NetworkFoods {
     final jsonResponse = json.decode(response.body.toString());
     if (jsonResponse.toString().contains('false')) {}
     ResultOrderDetail _ResultOrderDetail = new ResultOrderDetail.fromJson(jsonResponse);
+    return _ResultOrderDetail;
+  }
+
+  static Future<ResultOrderDetailToday> loadOrderDetailToday(String strBody) async {
+    String url = 'http://103.82.248.128/eMenuAPI/api/eMenu/DelGetOrderDetailToday';
+    var response = await http.post('$url',
+        headers: {"Content-Type": "application/json"}, body: strBody);
+    final jsonResponse = json.decode(response.body.toString());
+    if (jsonResponse.toString().contains('false')) {}
+    ResultOrderDetailToday _ResultOrderDetail = new ResultOrderDetailToday.fromJson(jsonResponse);
     return _ResultOrderDetail;
   }
 
@@ -220,6 +250,32 @@ class NetworkFoods {
     return _retStatusInsertOrder;
   }
 
+
+
+  static Future<resultUpdateFlagDelivery> updateFlagDelivery({String strBody}) async {
+
+
+
+
+    String url = 'http://103.82.248.128/eMenuAPI/api/eMenu/DelSetFlagDelivery';
+
+    print(strBody);
+
+    var response = await http.post('$url',
+        headers: {"Content-Type": "application/json"}, body: strBody);
+    final jsonResponse = json.decode(response.body.toString());
+
+    print(response.body.toString());
+    resultUpdateFlagDelivery _retFlafDelivery =
+    new resultUpdateFlagDelivery.fromJson(jsonResponse);
+
+
+
+    return _retFlafDelivery;
+  }
+
+
+
   static Future<RetRegister> insertRegister({String strBody}) async {
     String url = 'http://103.82.248.128/eMenuAPI/api/eMenu/register';
     var response = await http.post('$url',
@@ -244,6 +300,8 @@ class NetworkFoods {
     var response = await http.post('$url',
         headers: {"Content-Type": "application/json"}, body: strBody);
     final jsonResponse = json.decode(response.body.toString());
+    print(jsonResponse.toString());
+
     RetLogin _ret = new RetLogin.fromJson(jsonResponse);
     return _ret;
   }

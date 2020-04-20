@@ -1,6 +1,7 @@
 import 'package:emenu_covid/models/orderDetail.dart';
 import 'package:flutter/material.dart';
 import 'package:emenu_covid/models/order.dart';
+import 'package:emenu_covid/models/flagDelivery.dart';
 import 'dart:async';
 import 'package:emenu_covid/screens/home/FirstPage.dart';
 import 'package:emenu_covid/screens/home/OrderHeader.dart';
@@ -12,6 +13,7 @@ import 'package:emenu_covid/models/bill.dart';
 import 'package:emenu_covid/screens/home/DetailCommendPage.dart';
 import 'package:emenu_covid/models/logout.dart';
 import 'package:emenu_covid/services/AlertForm.dart';
+import 'package:emenu_covid/screens/admin/OrderHeaderToday.dart';
 
 //String _restaurantID = globals.restaurantID;
 //String _tableID = globals.tableID;
@@ -25,7 +27,7 @@ Future<double> _totals;
 Future<String> _jsonBody;
 String jsonBody;
 
-Future<RetStatusInsertOrder> retInsert;
+Future<resultUpdateFlagDelivery> retInsert;
 Future<strJsonOrder> JsonOrder;
 
 int foodsID;
@@ -40,14 +42,14 @@ String taste;
 String iTest = '';
 
 void main() {
-  runApp(OrderDetail());
+  runApp(OrderDetailTodayPage());
 }
 
-class OrderDetail extends StatefulWidget {
+class OrderDetailTodayPage extends StatefulWidget {
   final String orderID;
   final String restaurantID;
 
-  OrderDetail({this.orderID, this.restaurantID});
+  OrderDetailTodayPage({this.orderID, this.restaurantID});
 
   @override
   State<StatefulWidget> createState() {
@@ -55,7 +57,7 @@ class OrderDetail extends StatefulWidget {
   }
 }
 
-class _ShowData extends State<OrderDetail> {
+class _ShowData extends State<OrderDetailTodayPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
 //  String strBody = '{"orderID":"{$}"}';
@@ -73,7 +75,7 @@ class _ShowData extends State<OrderDetail> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => OrderDetail()),
+                    MaterialPageRoute(builder: (context) => OrderDetailTodayPage()),
                   );
                 },
                 child: Text("OK"),
@@ -94,7 +96,7 @@ class _ShowData extends State<OrderDetail> {
     dbHelper = DatabaseHelper();
 
     refreshOrderDetail();
-     refreshTotalDetail();
+    refreshTotalDetail();
   }
 
   showSnak() {
@@ -132,49 +134,49 @@ class _ShowData extends State<OrderDetail> {
   //CODE HERE
 
   Widget _ListSectionStatus({ResultOrderDetail menu}) => ListView.builder(
-        itemBuilder: (context, int idx) {
-          return Padding(
-            padding: EdgeInsets.symmetric(vertical: 1.0),
-            child: Column(
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 8.0,
-                    vertical: 1.0,
-                  ),
-                  child: Container(
-                    child: new ListTile(
+    itemBuilder: (context, int idx) {
+      return Padding(
+        padding: EdgeInsets.symmetric(vertical: 1.0),
+        child: Column(
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: 8.0,
+                vertical: 1.0,
+              ),
+              child: Container(
+                child: new ListTile(
 
-                      title: Text(
-                        menu.orderList[idx].foodsName.toString(),
-                        style: TextStyle(
-                          fontFamily: 'Kanit',
-                        ),
-                      ),
-                      subtitle: new Column(
+                  title: Text(
+                    menu.orderList[idx].foodsName.toString(),
+                    style: TextStyle(
+                      fontFamily: 'Kanit',
+                    ),
+                  ),
+                  subtitle: new Column(
+                    children: <Widget>[
+                      new Row(
                         children: <Widget>[
-                          new Row(
-                            children: <Widget>[
-                              Text(
-                                menu.orderList[idx].qty.toString() + 'x',
-                                style: TextStyle(
-                                  fontFamily: 'Kanit',
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                              Text(
-                                '   ราคา: ' +
-                                    menu.orderList[idx].price.toString() +
-                                    ' บาท',
-                                style: TextStyle(
-                                  fontFamily: 'Kanit',
-                                  fontWeight: FontWeight.normal,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                            ],
+                          Text(
+                            menu.orderList[idx].qty.toString() + 'x',
+                            style: TextStyle(
+                              fontFamily: 'Kanit',
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey,
+                            ),
                           ),
+                          Text(
+                            '   ราคา: ' +
+                                menu.orderList[idx].price.toString() +
+                                ' บาท',
+                            style: TextStyle(
+                              fontFamily: 'Kanit',
+                              fontWeight: FontWeight.normal,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ],
+                      ),
 //                          new Row(
 //                            children: <Widget>[
 //                              Padding(
@@ -201,32 +203,32 @@ class _ShowData extends State<OrderDetail> {
 //                              ),
 //                            ],
 //                          )
-                        ],
-                      ),
-                      trailing: Text(
-                        menu.orderList[idx].totalPrice.toString(),
-                        style: TextStyle(
-                          fontFamily: 'Kanit',
-                        ),
-                      ),
-                    ),
-                    decoration: new BoxDecoration(
-                      border: Border(
-                        bottom: new BorderSide(
-                          color: Colors.cyan,
-                          width: 0.5,
-                          style: BorderStyle.solid,
-                        ),
-                      ),
+                    ],
+                  ),
+                  trailing: Text(
+                    menu.orderList[idx].totalPrice.toString(),
+                    style: TextStyle(
+                      fontFamily: 'Kanit',
                     ),
                   ),
-                )
-              ],
-            ),
-          );
-        },
-        itemCount: menu.orderList.length,
+                ),
+                decoration: new BoxDecoration(
+                  border: Border(
+                    bottom: new BorderSide(
+                      color: Colors.cyan,
+                      width: 0.5,
+                      style: BorderStyle.solid,
+                    ),
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
       );
+    },
+    itemCount: menu.orderList.length,
+  );
 
   Widget _noOrder() {
     return new Card(
@@ -236,7 +238,7 @@ class _ShowData extends State<OrderDetail> {
 //      ),
 //      elevation: 5,
 //      margin: EdgeInsets.all(10),
-        );
+    );
   }
 
   headerListOrder() {
@@ -343,14 +345,14 @@ class _ShowData extends State<OrderDetail> {
             Row(children: <Widget>[
               Expanded(
                 child: new RaisedButton(
-                  color: Colors.pinkAccent,
+                  color: Colors.white,
                   child: FutureBuilder(
                       future: _totals,
                       builder: (context, snapshot) {
                         return Text(
                           'รวมราคา  ${snapshot.data.toString().replaceAll('.0', '')} บาท',
                           style: TextStyle(
-                            color: Colors.white,
+                            color: Colors.black,
                             fontFamily: 'Kanit',
                           ),
                         );
@@ -358,84 +360,33 @@ class _ShowData extends State<OrderDetail> {
                   onPressed: () {},
                 ),
               ),
+
+              Expanded(
+                child: new RaisedButton(
+                  color: Colors.pinkAccent,
+                  child: Text(
+                          'รับออเดอร์',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: 'Kanit',
+                          ),
+                        ),
+                  onPressed: () {
+//CodeHere
+                    String strBody =
+                        '{"orderID":"${widget.orderID}","value":"1"}';
+                    ttt(strBody);
+                  },
+                ),
+              )
+
+
+
             ])
           ],
         ),
       ),
-      bottomNavigationBar: new BottomAppBar(
-        color: Colors.cyan,
-        child: new Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          mainAxisSize: MainAxisSize.max,
-          children: <Widget>[
-            new IconButton(
-                icon: new Icon(Icons.home),
-                color: Colors.white,
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => FirstPage()),
-                  );
-                }),
-            //   new IconButton(icon: new Text('SAVE'), onPressed: null),
 
-            new IconButton(
-                icon: new Icon(Icons.restaurant),
-                color: Colors.white,
-                onPressed: () {
-                  if (globals.restaurantID != null) {
-                    if (globals.restaurantID != '') {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => DetailCommendPage(
-                                  restaurantID: globals.restaurantID,
-                              tel: globals.restaurantTel,
-                                )),
-                      );
-                    } else {}
-                  } else {}
-                }),
-
-            new IconButton(
-                icon: new Icon(Icons.add_shopping_cart),
-                color: Colors.white,
-                onPressed: () {
-                  if (globals.restaurantID != null) {
-                    if (globals.restaurantID != '') {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => MyOrder()),
-                      );
-                    } else {}
-                  } else {}
-                }),
-
-            new IconButton(
-                icon: new Icon(Icons.list),
-                color: Colors.white,
-                onPressed: () {
-                  if (globals.restaurantID != null) {
-                    if (globals.restaurantID != '') {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => OrderHeader()),
-                      );
-                    } else {}
-                  } else {}
-                }),
-
-            new IconButton(icon: new Icon(Icons.exit_to_app),
-                color: Colors.white,
-                onPressed: () {
-                  AlertService tmp = new AlertService(title: 'Are you sure ?',desc: 'คุณต้องการออกจาก Application ใช่ไหม');
-                  tmp.showAlertExit(context);
-              //showAlert(context);
-            //  SystemChannels.platform.invokeMethod('SystemNavigator.pop');
-            }),
-          ],
-        ),
-      ),
     );
   }
 
@@ -447,13 +398,13 @@ class _ShowData extends State<OrderDetail> {
         title: Row(children: <Widget>[
           new Expanded(
               child: new Text(
-            "รายการ",
-            style: TextStyle(
-              fontFamily: 'Kanit',
-              color: Colors.grey,
-              fontWeight: FontWeight.bold,
-            ),
-          )),
+                "รายการ",
+                style: TextStyle(
+                  fontFamily: 'Kanit',
+                  color: Colors.grey,
+                  fontWeight: FontWeight.bold,
+                ),
+              )),
         ]),
         trailing: Text(
           'ราคา ',
@@ -467,31 +418,7 @@ class _ShowData extends State<OrderDetail> {
     );
   }
 
-  void _LogOut() async {
-    if (globals.tableID != null && globals.tableID != '') {
-      String strBody =
-          '{"userID":"${globals.userID}","tableID":"${globals.tableID}"}';
-      var feed = await NetworkFoods.loadLogout(strBody);
-      var data = DataFeedLogout(feed: feed);
-      if (data.feed.ResultOk == "false") {
-        //   _showAlertLogout(data.feed.ErrorMessage);
-      } else {
-        globals.tableID = '';
-        globals.restaurantID = '';
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => FirstPage()),
-        );
-      }
-    } else {
-      globals.tableID = '';
-      globals.restaurantID = '';
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => FirstPage()),
-      );
-    }
-  }
+
 
   void _dialogResult(String str) {
     if (str == 'Accept') {
@@ -564,13 +491,15 @@ class _ShowData extends State<OrderDetail> {
 
   void ttt(String strAll) async {
 
-    var feed = await NetworkFoods.inSertOrder(strBody: strAll);
+    var feed = await NetworkFoods.updateFlagDelivery(strBody: strAll);
     var data = DataFeed(feed: feed);
     if (data.feed.ResultOk.toString() == "true") {
-      dbHelper.deleteAll();
 
-      refreshOrderDetail();
-      //  refreshTotalCheckbill();
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => OrderHeaderToday()),
+      );
+
     } else {
       showSnak();
     }
@@ -578,25 +507,12 @@ class _ShowData extends State<OrderDetail> {
 }
 
 class DataFeed {
-  RetStatusInsertOrder feed;
-
+  resultUpdateFlagDelivery feed;
   DataFeed({this.feed});
 }
 
-class DataFeedBill {
-  RetBill feed;
 
-  DataFeedBill({this.feed});
-}
 
-class DataFeedJson {
-  strJsonOrder feed;
 
-  DataFeedJson({this.feed});
-}
 
-class DataFeedLogout {
-  LogoutTable feed;
 
-  DataFeedLogout({this.feed});
-}

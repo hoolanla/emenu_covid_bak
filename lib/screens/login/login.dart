@@ -13,6 +13,8 @@ import 'package:emenu_covid/models/register.dart';
 import 'package:emenu_covid/globals.dart' as globals;
 import 'package:emenu_covid/screens/login/signup.dart';
 import 'package:emenu_covid/sqlite/db_helper.dart';
+import 'package:emenu_covid/screens/home/webView.dart';
+import 'package:emenu_covid/screens/admin/OrderHeaderToday.dart';
 
 final User _user = new User();
 final String DISPLAYNAME = "displayName";
@@ -34,8 +36,6 @@ class _SignUpState extends State<Login> {
   AuthService authService = AuthService();
   RetLogin _letLogin;
 
-
-
   static final TextEditingController _textTel = TextEditingController();
 
   String tel;
@@ -46,16 +46,13 @@ class _SignUpState extends State<Login> {
   bool _result = false;
   FocusNode passwordFocusNode = FocusNode();
 
-
-
   var dbHelper;
+
   @override
   void initState() {
     super.initState();
     dbHelper = DatabaseHelper();
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -104,6 +101,7 @@ class _SignUpState extends State<Login> {
         _pref.setString(TEL, data.feed.tel.toString());
         _pref.setString(LASTNAME, data.feed.lastname.toString());
         onLoginStatusChanged(true);
+        globals.restaurantID = feed.restaurantID.toString();
         globals.userID = feed.memberID.toString();
         globals.tel = feed.tel.toString();
         globals.lastName = feed.lastname.toString();
@@ -112,8 +110,27 @@ class _SignUpState extends State<Login> {
         globals.showDialogFirstRun = "0";
         dbHelper.deleteAll();
 
-        Navigator.push(context,
-            new MaterialPageRoute(builder: (context) => new FirstPage()));
+        if(globals.typeUser == "1") {
+          Navigator.push(
+            context,
+            new MaterialPageRoute(
+              builder: (context) => new FirstPage(),
+            ),
+          );
+
+        }
+        else {
+
+            Navigator.push(
+              context,
+              new MaterialPageRoute(
+                builder: (context) => new OrderHeaderToday(),
+              ),
+            );
+
+        }
+
+
       } else {
         _showAlertDialog(strError: data.feed.ErrorMessage.toString());
       }
@@ -134,19 +151,18 @@ class _SignUpState extends State<Login> {
       if (this._formKey.currentState.validate()) {
         _formKey.currentState.save();
         SharedPreferences _pref = await SharedPreferences.getInstance();
-        SendtoJsonLogin(tel: tel, password: password, type_: "N");
+        SendtoJsonLogin(tel: tel, password: password, type_: globals.typeUser);
       }
     }
 
     double height = MediaQuery.of(context).size.height / 3;
     return Scaffold(
-
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Container(
-                margin: const EdgeInsets.only(left: 0.0, right: 0.0,top: 0.0),
+                margin: const EdgeInsets.only(left: 0.0, right: 0.0, top: 0.0),
                 padding: EdgeInsets.fromLTRB(0.0, 25.0, 0.0, 0.0),
                 child: Image.asset(
                   'assets/images/CovidFoodLogoBar.png',
@@ -183,8 +199,10 @@ class _SignUpState extends State<Login> {
                                 child: ListTile(
                                   title: TextFormField(
                                     keyboardType: TextInputType.number,
-                                    inputFormatters: [LengthLimitingTextInputFormatter(10),
-                                    WhitelistingTextInputFormatter.digitsOnly],
+                                    inputFormatters: [
+                                      LengthLimitingTextInputFormatter(10),
+                                      WhitelistingTextInputFormatter.digitsOnly
+                                    ],
                                     decoration: InputDecoration(
                                       border: InputBorder.none,
                                       hintText: 'Telephone',
@@ -257,7 +275,6 @@ class _SignUpState extends State<Login> {
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
                                       fontSize: 20.0,
-
                                     ),
                                   ),
                                 )),
@@ -273,7 +290,6 @@ class _SignUpState extends State<Login> {
                                   style: TextStyle(
                                     color: Colors.black,
                                     fontWeight: FontWeight.w400,
-
                                   ),
                                 ),
                               ),
@@ -293,7 +309,6 @@ class _SignUpState extends State<Login> {
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                           color: Colors.black,
-
                                         ),
                                       ))),
                             ],
@@ -307,7 +322,6 @@ class _SignUpState extends State<Login> {
                                   padding: const EdgeInsets.all(8.0),
                                   child: Divider(),
                                 ),
-
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Divider(
@@ -317,7 +331,6 @@ class _SignUpState extends State<Login> {
                               ],
                             ),
                           ),
-
                         ],
                       )),
                 ),
@@ -350,7 +363,7 @@ class _SignUpState extends State<Login> {
       return "Telphone must numeric.";
     }
 
-    if (!isLength(value,10,10)) {
+    if (!isLength(value, 10, 10)) {
       return "Telphone must Length 10 charactors.";
     }
     return null;

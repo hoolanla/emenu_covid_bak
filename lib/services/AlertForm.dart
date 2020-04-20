@@ -1,38 +1,57 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
+class AlertService {
+  final String title;
+  final String desc;
 
-var alertStyle = AlertStyle(
-  animationType: AnimationType.fromTop,
-  isCloseButton: false,
-  isOverlayTapDismiss: false,
-  descStyle: TextStyle(fontWeight: FontWeight.normal,fontFamily: 'Kanit',fontSize: 14),
-  animationDuration: Duration(milliseconds: 400),
+  AlertService({
+    this.title,
+    this.desc
+  });
 
-  alertBorder: RoundedRectangleBorder(
-    borderRadius: BorderRadius.circular(10.0),
-    side: BorderSide(
-      color: Colors.grey,
+  var alertStyle = AlertStyle(
+    animationType: AnimationType.fromTop,
+    isCloseButton: false,
+    isOverlayTapDismiss: false,
+    descStyle: TextStyle(
+        fontWeight: FontWeight.normal, fontFamily: 'Kanit', fontSize: 14),
+    animationDuration: Duration(milliseconds: 400),
+
+    alertBorder: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(10.0),
+      side: BorderSide(
+        color: Colors.grey,
+      ),
     ),
-  ),
-  titleStyle: TextStyle(
-    color: Colors.red,
-  ),
-);
-
-showAlert(BuildContext context) {
-  Alert(
-    context: context,
-    type: AlertType.none,
-    title: "Are you sure ?",
-    desc: "คุณต้องการออกจาก Application ใช่ไหม?",
-    style: alertStyle,
-    buttons: [
-      DialogButton(
+    titleStyle: TextStyle(
+      color: Colors.red,
+    ),
+  );
+  void showAlertExit(BuildContext context) {
+    Alert(
+      context: context,
+      type: AlertType.none,
+      title: title,
+      desc: desc,
+      style: alertStyle,
+      buttons: [
+        DialogButton(
+            child: Text(
+              "CANCEL",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 12,
+                fontFamily: 'Kanit',
+              ),
+            ),
+            onPressed: () {
+              Navigator.of(context, rootNavigator: true).pop();
+            }),
+        DialogButton(
           child: Text(
-            "CANCEL",
+            "EXIT",
             style: TextStyle(
               color: Colors.white,
               fontSize: 12,
@@ -40,37 +59,93 @@ showAlert(BuildContext context) {
             ),
           ),
           onPressed: () {
-            Navigator.of(context, rootNavigator: true).pop();
-          }),
-      DialogButton(
-        child: Text(
-          "EXIT",
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 12,
-            fontFamily: 'Kanit',
-          ),
-        ),
-        onPressed: () {
             exit(0);
 
-          //  Navigator.of(context, rootNavigator: true).pop();
-        },
-        color: Colors.red,
-      )
-    ],
-  ).show();
-}
+            //  Navigator.of(context, rootNavigator: true).pop();
+          },
+          color: Colors.red,
+        )
+      ],
+    ).show();
+  }
+  void showAlertFirstRun(BuildContext context) {
+    Alert(
+      context: context,
+      type: AlertType.none,
+      title: "COVID-19",
+      desc: "เนื่องด้วยสถานการณ์โควิดที่เกินขึ้นตอนนี้ APP จะเปิดให้สั่งอาหารได้เฉพาะ ช่วงเวลา 21:00 - 04:00",
+      style: alertStyle,
+      buttons: [
+        DialogButton(
+            child: Text(
+              "OK",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 12,
+                fontFamily: 'Kanit',
+              ),
+            ),
+            onPressed: () {
+              Navigator.of(context, rootNavigator: true).pop();
+            }),
+      ],
+    ).show();
+  }
 
-showAlertFirstRun(BuildContext context) {
-  Alert(
-    context: context,
-    type: AlertType.none,
-    title: "COVID-19",
-    desc: "เนื่องด้วยสถานการณ์โควิดที่เกินขึ้นตอนนี้ APP จะเปิดให้สั่งอาหารได้เฉพาะ ช่วงเวลา 21:00 - 04:00",
-    style: alertStyle,
-    buttons: [
-      DialogButton(
+  var alertStyleRegisSuccess = AlertStyle(
+    animationType: AnimationType.fromTop,
+    isCloseButton: true,
+    isOverlayTapDismiss: true,
+    descStyle: TextStyle(
+        fontWeight: FontWeight.normal, fontFamily: 'Kanit', fontSize: 14),
+    animationDuration: Duration(milliseconds: 400),
+//
+//    alertBorder: RoundedRectangleBorder(
+//      borderRadius: BorderRadius.circular(10.0),
+//      side: BorderSide(
+//        color: Colors.grey,
+//      ),
+//    ),
+    titleStyle: TextStyle(
+      color: Colors.black,
+    ),
+  );
+ void showAlertRegisSuccess(BuildContext context) {
+    Alert(
+      context: context,
+      type: AlertType.none,
+      title: title,
+      desc: desc,
+      style: alertStyleRegisSuccess,
+      buttons: [
+        DialogButton(
+          child: Text(
+            "OK",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 12,
+              fontFamily: 'Kanit',
+            ),
+          ),
+          onPressed: () {
+            Navigator.of(context, rootNavigator: true)
+                .pushNamed('/FirstPage');
+          },
+          color: Colors.pinkAccent,
+        )
+      ],
+    ).show();
+  }
+
+  void showAlertRegisSuccessFalse(BuildContext context) {
+    Alert(
+      context: context,
+      type: AlertType.none,
+      title: title,
+      desc: desc,
+      style: alertStyleRegisSuccess,
+      buttons: [
+        DialogButton(
           child: Text(
             "OK",
             style: TextStyle(
@@ -81,7 +156,11 @@ showAlertFirstRun(BuildContext context) {
           ),
           onPressed: () {
             Navigator.of(context, rootNavigator: true).pop();
-          }),
-    ],
-  ).show();
+          },
+          color: Colors.red,
+        )
+      ],
+    ).show();
+  }
+
 }
