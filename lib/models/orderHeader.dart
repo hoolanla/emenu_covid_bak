@@ -4,7 +4,8 @@ class OrderHeader {
   String totalPrice;
   String restaurant_name;
   String status;
-  OrderHeader({this.orderID, this.qty, this.totalPrice, this.restaurant_name, this.status});
+  String createDate;
+  OrderHeader({this.orderID, this.qty, this.totalPrice, this.restaurant_name, this.status,this.createDate});
   factory OrderHeader.fromJson(Map<String, dynamic> parsedJson) {
     return OrderHeader(
       orderID: parsedJson['orderID'],
@@ -12,6 +13,7 @@ class OrderHeader {
       totalPrice: parsedJson['totalPrice'],
       restaurant_name: parsedJson['restaurant_name'],
       status: parsedJson['status'],
+      createDate: parsedJson['createDate'],
     );
   }
 }

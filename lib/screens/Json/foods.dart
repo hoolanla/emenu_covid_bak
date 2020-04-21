@@ -124,10 +124,18 @@ class NetworkFoods {
 
 
   static Future<ResultOrderHeader> loadOrderHeader(String strBody) async {
+
+
+    print(strBody);
+
     String url = 'http://103.82.248.128/eMenuAPI/api/eMenu/DelGetOrderHeaderByUserID';
     var response = await http.post('$url',
         headers: {"Content-Type": "application/json"}, body: strBody);
     final jsonResponse = json.decode(response.body.toString());
+
+    print(response.body.toString());
+
+
     if (jsonResponse.toString().contains('false')) {}
     ResultOrderHeader _ResultOrderHeader = new ResultOrderHeader.fromJson(jsonResponse);
     return _ResultOrderHeader;
@@ -277,6 +285,10 @@ class NetworkFoods {
 
 
   static Future<RetRegister> insertRegister({String strBody}) async {
+
+
+    print(strBody);
+
     String url = 'http://103.82.248.128/eMenuAPI/api/eMenu/register';
     var response = await http.post('$url',
         headers: {"Content-Type": "application/json"}, body: strBody);

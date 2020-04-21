@@ -1,4 +1,5 @@
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:emenu_covid/models/order.dart';
 import 'dart:async';
@@ -12,6 +13,7 @@ import 'package:emenu_covid/models/logout.dart';
 import 'package:emenu_covid/screens/home/OrderHeader.dart';
 import 'package:flutter/services.dart';
 import 'package:emenu_covid/services/AlertForm.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 //String _restaurantID = globals.restaurantID;
 //String _tableID = globals.tableID;
@@ -433,6 +435,7 @@ class _ShowData extends State<MyOrder> {
                   },
                 ),
               ),
+              SizedBox(width: 4,),
               Expanded(
                 child: new RaisedButton(
                   color: Colors.pinkAccent,
@@ -451,16 +454,20 @@ class _ShowData extends State<MyOrder> {
                         );
                       }),
                   onPressed: () {
-//CodeHere
-                    String _Header =
-                        '{"restaurantID":"${globals.restaurantID}","userID":"${globals.userID}","tableID":"100","latitude":"${globals.latitude}","longtitude":"${globals.longtitude}","orderList":[';
-                    String _Tail = ']}';
-                    String _All = '';
-                    _All = _Header + jsonBody + _Tail;
-                    ttt(_All);
+
+
+                    _onAlert(context);
+
+//                    String _Header =
+//                        '{"restaurantID":"${globals.restaurantID}","userID":"${globals.userID}","tableID":"100","latitude":"${globals.latitude}","longtitude":"${globals.longtitude}","orderList":[';
+//                    String _Tail = ']}';
+//                    String _All = '';
+//                    _All = _Header + jsonBody + _Tail;
+//                    ttt(_All);
                   },
                 ),
-              )
+              ),
+              SizedBox(width: 4,),
             ])
           ],
         ),
@@ -543,6 +550,91 @@ class _ShowData extends State<MyOrder> {
       ),
     );
   }
+
+
+  var alertStyle = AlertStyle(
+    animationType: AnimationType.fromTop,
+    isCloseButton: false,
+    isOverlayTapDismiss: false,
+    descStyle: TextStyle(
+        fontWeight: FontWeight.normal, fontFamily: 'Kanit', fontSize: 14),
+    animationDuration: Duration(milliseconds: 400),
+    alertBorder: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(10.0),
+      side: BorderSide(
+        color: Colors.grey,
+      ),
+    ),
+    titleStyle: TextStyle(
+      color: Colors.red,
+    ),
+  );
+
+
+
+  _onAlert(context) {
+    Alert(
+      context: context,
+      type: AlertType.none,
+      title: "Are you sure ?",
+      desc: "สรุปรายการอาหารทั้งหมดที่เลือกไว้ คุณต้องการสั่งอาหารทันทีใช่ไหม?",
+      style: alertStyle,
+      buttons: [
+        DialogButton(
+            child: Text(
+              "CANCEL",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 12,
+                fontFamily: 'Kanit',
+              ),
+            ),
+            onPressed: () {
+
+              Navigator.of(context, rootNavigator: true)
+                  .pushNamed('/MyOrder');
+            }),
+        DialogButton(
+          child: Text(
+            "OK",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 12,
+              fontFamily: 'Kanit',
+            ),
+          ),
+          onPressed: () {
+
+
+
+                                String _Header =
+                        '{"restaurantID":"${globals.restaurantID}","userID":"${globals.userID}","tableID":"100","latitude":"${globals.latitude}","longtitude":"${globals.longtitude}","orderList":[';
+                    String _Tail = ']}';
+                    String _All = '';
+                    _All = _Header + jsonBody + _Tail;
+                    ttt(_All);
+
+
+
+
+            Navigator.of(context, rootNavigator: true).push(
+              CupertinoPageRoute<bool>(
+                fullscreenDialog: true,
+                builder: (BuildContext context) => OrderHeader(),
+              ),
+            );
+
+            //  Navigator.of(context, rootNavigator: true).pop();
+          },
+          color: Colors.red,
+        )
+      ],
+    ).show();
+  }
+
+
+
+
 
   void _LogOut() {
       globals.restaurantID = "0";

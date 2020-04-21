@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:emenu_covid/globals.dart' as globals;
 
 class AlertService {
   final String title;
@@ -68,6 +69,7 @@ class AlertService {
       ],
     ).show();
   }
+
   void showAlertFirstRun(BuildContext context) {
     Alert(
       context: context,
@@ -110,7 +112,7 @@ class AlertService {
       color: Colors.black,
     ),
   );
- void showAlertRegisSuccess(BuildContext context) {
+  void showAlertRegisSuccess(BuildContext context) {
     Alert(
       context: context,
       type: AlertType.none,
@@ -128,8 +130,17 @@ class AlertService {
             ),
           ),
           onPressed: () {
-            Navigator.of(context, rootNavigator: true)
-                .pushNamed('/FirstPage');
+
+            if(globals.typeUser == "1") {
+              Navigator.of(context, rootNavigator: true)
+                  .pushNamed('/FirstPage');
+            }
+            else
+              { Navigator.of(context, rootNavigator: true)
+                  .pushNamed('/Login');
+              }
+
+
           },
           color: Colors.pinkAccent,
         )
@@ -159,6 +170,72 @@ class AlertService {
           },
           color: Colors.red,
         )
+      ],
+    ).show();
+  }
+
+  void showAlertSendOrder(BuildContext context) {
+    Alert(
+      context: context,
+      type: AlertType.none,
+      title: title,
+      desc: desc,
+      style: alertStyle,
+      buttons: [
+        DialogButton(
+            child: Text(
+              "CANCEL",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 12,
+                fontFamily: 'Kanit',
+              ),
+            ),
+            onPressed: () {
+              Navigator.of(context, rootNavigator: true).pop();
+            }),
+        DialogButton(
+          child: Text(
+            "OK",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 12,
+              fontFamily: 'Kanit',
+            ),
+          ),
+          onPressed: () {
+
+
+            //  Navigator.of(context, rootNavigator: true).pop();
+          },
+          color: Colors.red,
+        )
+      ],
+    ).show();
+  }
+
+  void showAlertPressCancel(BuildContext context) {
+    Alert(
+      context: context,
+      type: AlertType.none,
+      title: "",
+      desc: desc,
+      style: alertStyle,
+      buttons: [
+        DialogButton(
+          color: Colors.pinkAccent,
+            child: Text(
+              "OK",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 12,
+                fontFamily: 'Kanit',
+
+              ),
+            ),
+            onPressed: () {
+              Navigator.of(context, rootNavigator: true).pop();
+            }),
       ],
     ).show();
   }

@@ -127,15 +127,27 @@ class _ShowData extends State<OrderHeader> {
                         );
                       },
                       title: Text(
-                        'ร้าน: ' +
-                            menu.orderHeaderList[idx].restaurant_name
-                                .toString(),
+                        menu.orderHeaderList[idx].createDate.toString() +
+                            '  ' +
+                            menu.orderHeaderList[idx].orderID.toString(),
                         style: TextStyle(
+                          fontWeight: FontWeight.bold,
                           fontFamily: 'Kanit',
+                          color: Colors.deepOrange,
                         ),
                       ),
                       subtitle: new Column(
                         children: <Widget>[
+                          new Row(
+                            children: <Widget>[
+                              Text(   menu.orderHeaderList[idx].restaurant_name.toString(),
+
+                                style: TextStyle(
+                                  fontFamily: 'Kanit',
+                                ),
+                              )
+                            ],
+                          ),
                           new Row(
                             children: <Widget>[
                               Text(   menu.orderHeaderList[idx].qty.toString() +
@@ -316,6 +328,7 @@ class _ShowData extends State<OrderHeader> {
             HeaderColumn(),
             listStatusOrder(),
             Row(children: <Widget>[
+              SizedBox(width: 4,),
               Expanded(
                 child: new RaisedButton(
                   color: Colors.pinkAccent,
@@ -338,6 +351,7 @@ class _ShowData extends State<OrderHeader> {
                   },
                 ),
               ),
+              SizedBox(width: 4,),
             ])
           ],
         ),

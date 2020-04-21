@@ -48,8 +48,9 @@ void main() {
 class OrderDetailTodayPage extends StatefulWidget {
   final String orderID;
   final String restaurantID;
+  final String status;
 
-  OrderDetailTodayPage({this.orderID, this.restaurantID});
+  OrderDetailTodayPage({this.orderID, this.restaurantID,this.status});
 
   @override
   State<StatefulWidget> createState() {
@@ -99,13 +100,7 @@ class _ShowData extends State<OrderDetailTodayPage> {
     refreshTotalDetail();
   }
 
-  showSnak() {
-    _scaffoldKey.currentState.showSnackBar(SnackBar(
-      content: Text("ไม่สามารถสั่งได้ กำลงัเคลียร์โต๊ะ"),
-      backgroundColor: Colors.deepOrange,
-      duration: Duration(seconds: 2),
-    ));
-  }
+
 
   refreshOrderDetail() {
     String strBody =
@@ -350,7 +345,7 @@ class _ShowData extends State<OrderDetailTodayPage> {
                       future: _totals,
                       builder: (context, snapshot) {
                         return Text(
-                          'รวมราคา  ${snapshot.data.toString().replaceAll('.0', '')} บาท',
+                          '${snapshot.data.toString().replaceAll('.0', '')} บาท',
                           style: TextStyle(
                             color: Colors.black,
                             fontFamily: 'Kanit',
@@ -361,9 +356,39 @@ class _ShowData extends State<OrderDetailTodayPage> {
                 ),
               ),
 
+              SizedBox(width: 4,),
+
               Expanded(
                 child: new RaisedButton(
-                  color: Colors.pinkAccent,
+                  color: Colors.red,
+                  child: Text(
+                    'Cancel',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'Kanit',
+                    ),
+                  ),
+                  onPressed: () {
+
+                    if(widget.status == "กำลังนำส่ง" || widget.status == "ส่งเรียบร้อย" || widget.status == "รับออเดอร์" )
+                      {
+                        AlertService tmp = new AlertService(title: '',desc: 'ไม่สามารถ Cancel ได้เนื่องจาก ' + widget.status + ' แล้ว');
+        tmp.showAlertPressCancel(context);
+
+                      }
+                    else
+                      {
+                        String strBody =
+                            '{"orderID":"${widget.orderID}","value":"9"}';
+                        ttt(strBody);
+                      }
+                  },
+                ),
+              ),
+              SizedBox(width: 4,),
+              Expanded(
+                child: new RaisedButton(
+                  color: Colors.green,
                   child: Text(
                           'รับออเดอร์',
                           style: TextStyle(
@@ -372,13 +397,21 @@ class _ShowData extends State<OrderDetailTodayPage> {
                           ),
                         ),
                   onPressed: () {
-//CodeHere
-                    String strBody =
-                        '{"orderID":"${widget.orderID}","value":"1"}';
-                    ttt(strBody);
+                    if(widget.status == "กำลังนำส่ง" || widget.status == "ส่งเรียบร้อย" || widget.status == "Cancel" )
+                      {
+                        AlertService tmp = new AlertService( title: '',desc: 'ไม่สามารถรับออเดอร์ได้เนื่องจาก ' + widget.status + ' แล้ว');
+                        tmp.showAlertPressCancel(context);
+                      }
+                    else {
+                      String strBody =
+                          '{"orderID":"${widget.orderID}","value":"1"}';
+                      ttt(strBody);
+                    }
+
                   },
                 ),
-              )
+              ),
+              SizedBox(width: 4,),
 
 
 
@@ -500,8 +533,10 @@ class _ShowData extends State<OrderDetailTodayPage> {
         MaterialPageRoute(builder: (context) => OrderHeaderToday()),
       );
 
-    } else {
-      showSnak();
+    }
+    else
+      {
+
     }
   }
 }

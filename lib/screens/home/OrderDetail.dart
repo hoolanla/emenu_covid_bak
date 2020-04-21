@@ -341,6 +341,7 @@ class _ShowData extends State<OrderDetail> {
             HeaderColumn(),
             listStatusOrder(),
             Row(children: <Widget>[
+              SizedBox(width: 4,),
               Expanded(
                 child: new RaisedButton(
                   color: Colors.pinkAccent,
@@ -358,6 +359,7 @@ class _ShowData extends State<OrderDetail> {
                   onPressed: () {},
                 ),
               ),
+              SizedBox(width: 4,),
             ])
           ],
         ),

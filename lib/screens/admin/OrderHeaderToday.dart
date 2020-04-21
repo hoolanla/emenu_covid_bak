@@ -12,6 +12,7 @@ import 'package:emenu_covid/screens/admin/OrderDetailToday.dart';
 import 'package:emenu_covid/models/logout.dart';
 import 'package:emenu_covid/services/AlertForm.dart';
 import 'package:url_launcher/url_launcher.dart' as Tlaunch;
+import 'package:condition/condition.dart';
 
 Future<ResultOrderHeaderToday> resultOrderHeaderToday;
 Future<double> _totalsCheckbill;
@@ -82,6 +83,7 @@ class _ShowData extends State<OrderHeaderToday> {
                             builder: (context) => OrderDetailTodayPage(
                               orderID: menu.orderHeaderTodayList[idx].orderID,
                               restaurantID: globals.restaurantID,
+                              status: menu.orderHeaderTodayList[idx].status,
                             ),
                           ),
                         );
@@ -128,9 +130,7 @@ class _ShowData extends State<OrderHeaderToday> {
                             ],
                           ),
                           new Row(
-
                             children: <Widget>[
-
                               Column(children: <Widget>[
                                 Text(
                                   menu.orderHeaderTodayList[idx].tel.toString(),
@@ -149,9 +149,11 @@ class _ShowData extends State<OrderHeaderToday> {
                                   size: 25.0,
                                 ),
                                 onPressed: () {
-                                  String tmp = menu.orderHeaderTodayList[idx].tel.toString().substring(1);
-                                  if(tmp.length > 0)
-                                  {
+                                  String tmp = menu
+                                      .orderHeaderTodayList[idx].tel
+                                      .toString()
+                                      .substring(1);
+                                  if (tmp.length > 0) {
                                     Tlaunch.launch("tel:+66" + tmp);
                                   }
                                 },
@@ -160,13 +162,9 @@ class _ShowData extends State<OrderHeaderToday> {
                           ),
                         ],
                       ),
-                      trailing: Text(
-                        menu.orderHeaderTodayList[idx].status.toString(),
-                        style: TextStyle(
-                            fontFamily: 'Kanit',
-                            color: Colors.green,
-                            fontWeight: FontWeight.bold),
-                      ),
+                      trailing: _buildText(
+                          status:
+                              menu.orderHeaderTodayList[idx].status.toString()),
                     ),
                     decoration: new BoxDecoration(
                       border: Border(
@@ -185,6 +183,25 @@ class _ShowData extends State<OrderHeaderToday> {
         },
         itemCount: menu.orderHeaderTodayList.length,
       );
+
+  Widget _buildText({String status}) {
+    if (status == "Cancel") {
+      return Text(
+        status,
+        style: TextStyle(
+            color: Colors.red,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'Kanit'),
+      );
+    }
+    return Text(
+      status,
+      style: TextStyle(
+          color: Colors.green,
+          fontWeight: FontWeight.bold,
+          fontFamily: 'Kanit'),
+    );
+  }
 
   Widget HeaderColumn() {
     return new Container(
@@ -323,17 +340,27 @@ class _ShowData extends State<OrderHeaderToday> {
             HeaderColumn(),
             listStatusOrder(),
             Row(children: <Widget>[
+              SizedBox(
+                width: 4,
+              ),
               Expanded(
                 child: new RaisedButton(
                   color: Colors.pinkAccent,
-                  child: Icon(Icons.refresh,color: Colors.white,),
+                  child: Icon(
+                    Icons.refresh,
+                    color: Colors.white,
+                  ),
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => OrderHeaderToday()),
+                      MaterialPageRoute(
+                          builder: (context) => OrderHeaderToday()),
                     );
                   },
                 ),
+              ),
+              SizedBox(
+                width: 4,
               ),
             ])
           ],

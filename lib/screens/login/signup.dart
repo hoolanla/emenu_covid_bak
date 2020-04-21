@@ -84,21 +84,19 @@ class _SignUpState extends State<SignUp> {
 
 
     void SendtoJson({String tel, String password, String username}) async {
+
+
+
       String strBody =
-          '{"tel":"${tel}","password":"${password}","username":"${username}"}';
+          '{"tel":"${tel}","password":"${password}","username":"${username}","type":"${globals.typeUser}"}';
       var feed = await NetworkFoods.insertRegister(strBody: strBody);
       var data = DataFeed(feed: feed);
-
-
-      print(data.feed.ResultOk);
 
       if (data.feed.ResultOk == "true") {
 
         globals.userID = data.feed.ReturnMessage;
         AlertService tmp = new AlertService(title: 'ลงทะเบียนสำเร็จ',desc: '');
         tmp.showAlertRegisSuccess(context);
-    //  showAlertRegisSuccess(context);
-     //   _showAlertDialogComplete(strReturn: 'Account is registration success. ',strContent: 'Thank you');
       } else {
         AlertService tmp = new AlertService(title: 'ลงทะเบียนไม่สำเร็จ',desc: data.feed.ErrorMessage.toString());
         tmp.showAlertRegisSuccessFalse(context);
