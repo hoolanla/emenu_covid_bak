@@ -13,8 +13,12 @@ import 'package:emenu_covid/models/logout.dart';
 import 'package:emenu_covid/services/AlertForm.dart';
 import 'package:url_launcher/url_launcher.dart' as Tlaunch;
 import 'package:condition/condition.dart';
+import 'package:emenu_covid/screens/admin/WebviewMenu.dart';
+
 
 Future<ResultOrderHeaderToday> resultOrderHeaderToday;
+List<ResultOrderHeaderToday> _searchResult = [];
+List<ResultOrderHeaderToday> _orderDetails = [];
 Future<double> _totalsCheckbill;
 
 String jsonBody;
@@ -45,6 +49,7 @@ class OrderHeaderToday extends StatefulWidget {
 
 class _ShowData extends State<OrderHeaderToday> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  TextEditingController editingController = TextEditingController();
 
   String strBody = '{"restaurantID":"${globals.restaurantID}","status":"0"}';
   var dbHelper;
@@ -59,6 +64,8 @@ class _ShowData extends State<OrderHeaderToday> {
 
   refreshOrderHeaderToday() {
     setState(() {
+
+      print(globals.restaurantID + "  " + globals.userID);
       resultOrderHeaderToday = NetworkFoods.loadOrderHeaderToday(strBody);
     });
   }
@@ -102,6 +109,8 @@ class _ShowData extends State<OrderHeaderToday> {
                         children: <Widget>[
                           new Row(
                             children: <Widget>[
+
+
                               Text(
                                 'คุณ: ' +
                                     menu.orderHeaderTodayList[idx].userName
@@ -183,6 +192,41 @@ class _ShowData extends State<OrderHeaderToday> {
         },
         itemCount: menu.orderHeaderTodayList.length,
       );
+
+
+  Widget _buildSearch(){
+   return Padding(
+      padding: const EdgeInsets.all(8.0),
+
+      child: TextField(
+        onChanged: (value) {
+setState(() {
+  _searchResult.clear();
+  if (value.isEmpty) {
+    setState(() {});
+    return;
+  }
+
+  _orderDetails.forEach((userDetail) {
+
+  });
+
+
+});
+        },
+        controller: editingController,
+        decoration: InputDecoration(
+
+            labelText: "Search",
+            hintText: "Search",
+            prefixIcon: Icon(Icons.search),
+            border: OutlineInputBorder(
+
+                borderRadius: BorderRadius.all(Radius.circular(25.0)))),
+      ),
+    );
+  }
+
 
   Widget _buildText({String status}) {
     if (status == "Cancel") {
@@ -337,6 +381,7 @@ class _ShowData extends State<OrderHeaderToday> {
           mainAxisSize: MainAxisSize.min,
           verticalDirection: VerticalDirection.down,
           children: <Widget>[
+          //  _buildSearch(),
             HeaderColumn(),
             listStatusOrder(),
             Row(children: <Widget>[
@@ -363,6 +408,44 @@ class _ShowData extends State<OrderHeaderToday> {
                 width: 4,
               ),
             ])
+          ],
+        ),
+      ),
+      bottomNavigationBar: new BottomAppBar(
+        color: Colors.cyan,
+        child: new Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisSize: MainAxisSize.max,
+          children: <Widget>[
+            new IconButton(
+                icon: new Icon(Icons.home),
+                color: Colors.white,
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => WebviewMenu()),
+                  );
+                }),
+            //   new IconButton(icon: new Text('SAVE'), onPressed: null),
+
+
+
+            new IconButton(
+                icon: new Icon(Icons.add_shopping_cart),
+                color: Colors.white,
+                onPressed: () {
+                  if (globals.restaurantID != null) {
+                    if (globals.restaurantID != '') {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => WebviewMenu()),
+                      );
+                    } else {}
+                  } else {}
+                }),
+
+
+
           ],
         ),
       ),
