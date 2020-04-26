@@ -13,6 +13,7 @@ import 'package:flutter/services.dart';
 import 'package:emenu_covid/services/AlertForm.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart' as Tlaunch;
+import 'package:emenu_covid/screens/admin/QRcode.dart';
 
 
 
@@ -20,6 +21,8 @@ String _mImage;
 String _mRestaurantName;
 Future<Menu> _menuPage1;
 Future<Restaurant> _rest;
+
+
 
 void main() {
 
@@ -29,10 +32,14 @@ void main() {
 class DetailCommendPage extends StatelessWidget {
   final String restaurantID;
   final String tel;
+  final String open_time;
+  final String close_time;
 
   DetailCommendPage({
     this.restaurantID,
-    this.tel
+    this.tel,
+    this.open_time,
+    this.close_time
   });
 
   @override
@@ -43,6 +50,8 @@ class DetailCommendPage extends StatelessWidget {
       home: new HomePage(
         restaurantID: restaurantID,
         tel: tel,
+        open_time: open_time,
+        close_time: close_time,
       ),
     );
   }
@@ -51,12 +60,16 @@ class DetailCommendPage extends StatelessWidget {
 class HomePage extends StatefulWidget {
   final String restaurantID;
   final String tel;
+  final String open_time;
+  final String close_time;
 
 
 
   HomePage({
     this.restaurantID,
-    this.tel
+    this.tel,
+    this.open_time,
+    this.close_time,
   });
 
   @override
@@ -84,6 +97,10 @@ class _HomePageState extends State<HomePage>
   String comment = '';
 
   List<Order> HaveData;
+  String open_time;
+  String close_time;
+
+
 
   final formKey = new GlobalKey<FormState>();
   var dbHelper;
@@ -153,6 +170,51 @@ class _HomePageState extends State<HomePage>
     });
   }
 
+
+  checkOpenClose() {
+
+
+
+
+    String DateTimeformatted1;
+    String DateTimeformatted2;
+
+    format(Duration d) => d.toString().split('.').first.padLeft(8, "0");
+
+
+    var now = new DateTime.now();
+    var formatter = new DateFormat('yyyy-MM-dd');
+    String Dateformatted = formatter.format(now);
+
+    DateTimeformatted1 = Dateformatted + ' ' + widget.close_time.toString();
+    DateTimeformatted2 = Dateformatted + ' ' + widget.open_time.toString();
+    DateTime dtClose = DateTime.parse(DateTimeformatted1);
+    DateTime dtOpen = DateTime.parse(DateTimeformatted2);
+
+  print(DateTime.now().toString());
+    print('Open' + dtOpen.toString() + '  Close  '  + dtClose.toString());
+    print(dtOpen.add(new Duration(days: 1)).toString()  );
+
+    if (DateTime.now().isBefore(dtOpen) && DateTime.now().isAfter(dtClose.add((new Duration(days: -1)))) ) {
+
+       globals.closeTimeFlag = "1";
+
+//    WidgetsBinding.instance
+//        .addPostFrameCallback((_) => _onAlertFirstRun(context));
+    }
+    else
+      {
+
+          print('open');
+          globals.closeTimeFlag = "0";
+
+      }
+
+  }
+
+
+
+
   @override
   void initState() {
     _tabController = new TabController(length: 1, vsync: this);
@@ -161,6 +223,7 @@ class _HomePageState extends State<HomePage>
     refreshRestaurant();
     refreshPage1();
     refreshRestCover();
+    checkOpenClose();
   }
 
   @override
@@ -252,23 +315,26 @@ class _HomePageState extends State<HomePage>
                 }),
             //   new IconButton(icon: new Text('SAVE'), onPressed: null),
 
-            new IconButton(
-                icon: new Icon(Icons.restaurant),
-                color: Colors.white,
-                onPressed: () {
-                  if (globals.restaurantID != null) {
-                    if (globals.restaurantID != '') {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => DetailCommendPage(
-                                  restaurantID: globals.restaurantID,
-                              tel:  globals.restaurantTel,
-                                )),
-                      );
-                    } else {}
-                  } else {}
-                }),
+//            new IconButton(
+//                icon: new Icon(Icons.restaurant),
+//                color: Colors.white,
+//                onPressed: () {
+//                  if (globals.restaurantID != null) {
+//                    if (globals.restaurantID != '') {
+//
+//                      Navigator.push(
+//                        context,
+//                        MaterialPageRoute(
+//                            builder: (context) => DetailCommendPage(
+//                                  restaurantID: globals.restaurantID,
+//                              tel:  globals.restaurantTel,
+//                              open_time: open_time,
+//                              close_time: close_time,
+//                                )),
+//                      );
+//                    } else {}
+//                  } else {}
+//                }),
 
             new IconButton(
                 icon: new Icon(Icons.add_shopping_cart),
@@ -297,6 +363,7 @@ class _HomePageState extends State<HomePage>
                     } else {}
                   } else {}
                 }),
+
 
             new IconButton(icon: new Icon(Icons.exit_to_app),
                 color: Colors.white,
@@ -460,6 +527,8 @@ class _HomePageState extends State<HomePage>
       dbHelper.save(e);
       globals.hasMyOrder = "1";
       globals.restaurantID = widget.restaurantID;
+      globals.openTimeRest = widget.open_time;
+      globals.closeTimeRest = widget.close_time;
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => MyOrder()),
@@ -467,6 +536,8 @@ class _HomePageState extends State<HomePage>
     } else {
       dbHelper.updateBySQL(foodsID: foodID);
       globals.restaurantID = widget.restaurantID;
+      globals.openTimeRest = widget.open_time;
+      globals.closeTimeRest = widget.close_time;
       // showSnak();
 
       Navigator.push(
@@ -511,9 +582,9 @@ class _HomePageState extends State<HomePage>
                           vertical: 8.0,
                         ),
                         child:  IgnorePointer(
-                          ignoring: globals.curfew == "1" ? true : false,
+                          ignoring: globals.curfew == "1" || globals.closeTimeFlag == "1" ? true : false,
                           child: Opacity(
-                            opacity: globals.curfew == "1" ? 0.5 : 1.0,
+                            opacity: globals.curfew == "1" || globals.closeTimeFlag == "1" ? 0.5 : 1.0,
                             child: Container(
                               child: ListTile(
                                 title: Text(

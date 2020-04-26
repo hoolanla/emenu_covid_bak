@@ -14,6 +14,7 @@ import 'package:emenu_covid/services/AlertForm.dart';
 import 'package:url_launcher/url_launcher.dart' as Tlaunch;
 import 'package:condition/condition.dart';
 import 'package:emenu_covid/screens/admin/WebviewMenu.dart';
+import 'package:emenu_covid/screens/admin/QRcode.dart';
 
 
 Future<ResultOrderHeaderToday> resultOrderHeaderToday;
@@ -417,21 +418,21 @@ setState(() {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
+//            new IconButton(
+//                icon: new Icon(Icons.home),
+//                color: Colors.white,
+//                onPressed: () {
+//                  Navigator.push(
+//                    context,
+//                    MaterialPageRoute(builder: (context) => WebviewMenu()),
+//                  );
+//                }),
+
+
+
+
             new IconButton(
-                icon: new Icon(Icons.home),
-                color: Colors.white,
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => WebviewMenu()),
-                  );
-                }),
-            //   new IconButton(icon: new Text('SAVE'), onPressed: null),
-
-
-
-            new IconButton(
-                icon: new Icon(Icons.add_shopping_cart),
+                icon: new Icon(Icons.store_mall_directory),
                 color: Colors.white,
                 onPressed: () {
                   if (globals.restaurantID != null) {
@@ -439,6 +440,21 @@ setState(() {
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => WebviewMenu()),
+                      );
+                    } else {}
+                  } else {}
+                }),
+
+
+            new IconButton(
+                icon: new Icon(Icons.center_focus_weak),
+                color: Colors.white,
+                onPressed: () {
+                  if (globals.restaurantID != null) {
+                    if (globals.restaurantID != '') {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => QRcode()),
                       );
                     } else {}
                   } else {}

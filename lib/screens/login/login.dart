@@ -110,7 +110,7 @@ class _SignUpState extends State<Login> {
         globals.showDialogFirstRun = "0";
         dbHelper.deleteAll();
 
-        if(globals.typeUser == "1") {
+        if(globals.typeUser == "2") {
           Navigator.push(
             context,
             new MaterialPageRoute(

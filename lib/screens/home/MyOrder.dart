@@ -501,25 +501,27 @@ class _ShowData extends State<MyOrder> {
                             builder: (context) => DetailCommendPage(
                               restaurantID: globals.restaurantID,
                               tel: globals.restaurantTel,
+                              open_time:  globals.openTimeRest,
+                              close_time: globals.closeTimeRest,
                             )),
                       );
                     } else {}
                   } else {}
                 }),
 
-            new IconButton(
-                icon: new Icon(Icons.add_shopping_cart),
-                color: Colors.white,
-                onPressed: () {
-                  if (globals.restaurantID != null) {
-                    if (globals.restaurantID != '') {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => MyOrder()),
-                      );
-                    } else {}
-                  } else {}
-                }),
+//            new IconButton(
+//                icon: new Icon(Icons.add_shopping_cart),
+//                color: Colors.white,
+//                onPressed: () {
+//                  if (globals.restaurantID != null) {
+//                    if (globals.restaurantID != '') {
+//                      Navigator.push(
+//                        context,
+//                        MaterialPageRoute(builder: (context) => MyOrder()),
+//                      );
+//                    } else {}
+//                  } else {}
+//                }),
 
             new IconButton(
                 icon: new Icon(Icons.list),

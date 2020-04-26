@@ -31,6 +31,7 @@ class RestaurantItems{
   String open_time;
   String close_time;
   String tel;
+  String open_close;
   RestaurantItems({
     this.restaurantID,
     this.restaurantName,
@@ -41,7 +42,8 @@ class RestaurantItems{
     this.distance_price,
     this.open_time,
     this.close_time,
-    this.tel
+    this.tel,
+    this.open_close
   });
 
   factory RestaurantItems.fromJson(Map<String, dynamic> parsedJson){
@@ -55,7 +57,8 @@ class RestaurantItems{
         distance_price: parsedJson['distance_price'],
         open_time: parsedJson['open_time'],
         close_time: parsedJson['close_time'],
-        tel: parsedJson['tel']
+        tel: parsedJson['tel'],
+        open_close: parsedJson['open_close'],
     );
   }
 }

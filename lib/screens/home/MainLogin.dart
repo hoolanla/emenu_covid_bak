@@ -110,7 +110,7 @@ class MainLoginState extends State<MainLogin> {
                                 ],
                               ),
                               onPressed: () {
-                                globals.typeUser = "2";
+                                globals.typeUser = "1";
                                 gotoLoginApp();
                               }
                             //gotoWebView();
@@ -162,7 +162,7 @@ class MainLoginState extends State<MainLogin> {
                                 ],
                               ),
                               onPressed: () {
-                                globals.typeUser = "1";
+                                globals.typeUser = "2";
                                 gotoLoginApp();
                               }),
                         ),

@@ -122,6 +122,7 @@ class _ShowData extends State<OrderHeader> {
                             builder: (context) => OrderDetail(
                               orderID: menu.orderHeaderList[idx].orderID,
                               restaurantID: menu.restuarantID,
+
                             ),
                           ),
                         );
@@ -383,6 +384,8 @@ class _ShowData extends State<OrderHeader> {
                             builder: (context) => DetailCommendPage(
                               restaurantID: globals.restaurantID,
                               tel: globals.restaurantTel,
+                              open_time: globals.openTimeRest,
+                              close_time: globals.closeTimeRest,
                             )),
                       );
                     } else {}
@@ -402,19 +405,19 @@ class _ShowData extends State<OrderHeader> {
                     } else {}
                   } else {}
                 }),
-            new IconButton(
-                icon: new Icon(Icons.list),
-                color: Colors.white,
-                onPressed: () {
-                  if (globals.restaurantID != null) {
-                    if (globals.restaurantID != '') {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => OrderHeader()),
-                      );
-                    } else {}
-                  } else {}
-                }),
+//            new IconButton(
+//                icon: new Icon(Icons.list),
+//                color: Colors.white,
+//                onPressed: () {
+//                  if (globals.restaurantID != null) {
+//                    if (globals.restaurantID != '') {
+//                      Navigator.push(
+//                        context,
+//                        MaterialPageRoute(builder: (context) => OrderHeader()),
+//                      );
+//                    } else {}
+//                  } else {}
+//                }),
             new IconButton(
                 icon: new Icon(Icons.exit_to_app),
                 color: Colors.white,

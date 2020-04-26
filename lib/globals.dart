@@ -18,7 +18,10 @@ String  tmpRestaurantName;
 String  newRestaurantName;
 String  hasMyOrder;
 String  showDialogFirstRun;
-String  curfew;
+String  curfew; // Check curfew time
 String  restaurantTel;
 String  newRestaurantTel;
 String  typeUser; // 1 = user 2 = admin
+String  closeTimeFlag; // Check close time restaurant
+String  closeTimeRest;
+String  openTimeRest;

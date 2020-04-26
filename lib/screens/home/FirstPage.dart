@@ -31,6 +31,8 @@ String taste;
 String iTest = '';
 
 String _restaurantID = globals.restaurantID;
+String close_time;
+String open_time;
 
 void main() {
   runApp(FirstPage());
@@ -54,19 +56,27 @@ class _ShowData extends State<FirstPage> {
     _checkDateTimeCurfuse();
   }
 
+
+
+
+
+
+
+
+
   _checkDateTimeCurfuse() {
     String DateTimeformatted1;
     String DateTimeformatted2;
 
     format(Duration d) => d.toString().split('.').first.padLeft(8, "0");
-    final tClose = Duration(hours: 21, minutes: 00); //
-    final tOpen = Duration(hours: 04, minutes: 00); //
+    final tClose = Duration(hours: 21, minutes: 00); // 21:00
+    final tOpen = Duration(hours: 04, minutes: 00); // 04:00
 
     var now = new DateTime.now();
     var formatter = new DateFormat('yyyy-MM-dd');
     String Dateformatted = formatter.format(now);
 
-    DateTimeformatted1 = Dateformatted + ' ' + tClose.toString();
+    DateTimeformatted1 = Dateformatted + ' ' + format(tClose);
     DateTimeformatted2 = Dateformatted + ' ' + format(tOpen);
     DateTime dtClose = DateTime.parse(DateTimeformatted1);
     DateTime dtOpen = DateTime.parse(DateTimeformatted2);
@@ -288,6 +298,9 @@ class _ShowData extends State<FirstPage> {
                       scale: 0.8,
                     ),
                   ),
+
+
+
                   Positioned(
                     left: 0.0,
                     right: 0.0,
@@ -306,6 +319,44 @@ class _ShowData extends State<FirstPage> {
                       )),
                     ),
                   ),
+
+
+
+
+                  Positioned(
+                    left: 10.0,
+                    bottom: 170.0,
+                    child: Row(
+                      //  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        SizedBox(
+                          width: 270,
+                          child: Column(
+                            children: <Widget>[
+                              Row(
+                                children: <Widget>[
+                                  Text(
+                                    Mrestaurant.data[idx].open_close,
+                                    style: TextStyle(
+                                      fontSize: 20.0,
+                                      fontFamily: 'Kanit',
+                                      color: Colors.orange,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+
+                            ],
+                          ),
+                        ),
+
+                      ],
+                    ),
+                  ),
+
+
+
                   Positioned(
                     left: 8.0,
                     bottom: 0.0,
@@ -391,18 +442,26 @@ class _ShowData extends State<FirstPage> {
                                 borderRadius: new BorderRadius.circular(30.0),
                               ),
                               onPressed: () {
+
+                                open_time = Mrestaurant.data[idx].open_time.toString();
+                                close_time = Mrestaurant.data[idx].close_time.toString();
+
+
                                 if (["", null, false, 0].contains(globals.currentRestaurant)) {
                                   globals.restaurantName = Mrestaurant.data[idx].restaurantName.toString();
                                   globals.restaurantID = Mrestaurant.data[idx].restaurantID.toString();
                                   globals.currentRestaurant = Mrestaurant.data[idx].restaurantID.toString();
                                   globals.restaurantTel = Mrestaurant.data[idx].tel.toString();
+                                  globals.openTimeRest = Mrestaurant.data[idx].open_time.toString();
+                                  globals.closeTimeRest = Mrestaurant.data[idx].close_time.toString();
 
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => DetailCommendPage(
                                         restaurantID: Mrestaurant.data[idx].restaurantID.toString(),
-                                        tel: Mrestaurant.data[idx].tel.toString(),
+                                        tel: Mrestaurant.data[idx].tel.toString(),open_time: Mrestaurant.data[idx].open_time.toString(),
+                                        close_time: Mrestaurant.data[idx].close_time.toString(),
                                       ),
                                     ),
                                   );
@@ -413,12 +472,16 @@ class _ShowData extends State<FirstPage> {
                                     globals.newRestaurantID = Mrestaurant.data[idx].restaurantID.toString();
                                     globals.newRestaurantName = Mrestaurant.data[idx].restaurantName.toString();
                                     globals.newRestaurantTel = Mrestaurant.data[idx].tel.toString();
+                                    globals.openTimeRest = Mrestaurant.data[idx].open_time.toString();
+                                    globals.closeTimeRest = Mrestaurant.data[idx].close_time.toString();
                                     _onAlert(context);
                                   } else {
                                     globals.restaurantID = Mrestaurant.data[idx].restaurantID.toString();
                                     globals.restaurantName = Mrestaurant.data[idx].restaurantName.toString();
                                     globals.currentRestaurant = Mrestaurant.data[idx].restaurantID.toString();
                                     globals.restaurantTel = Mrestaurant.data[idx].tel.toString();
+                                    globals.openTimeRest = Mrestaurant.data[idx].open_time.toString();
+                                    globals.closeTimeRest = Mrestaurant.data[idx].close_time.toString();
 
                                     Navigator.push(
                                       context,
@@ -426,6 +489,8 @@ class _ShowData extends State<FirstPage> {
                                         builder: (context) => DetailCommendPage(
                                           restaurantID: Mrestaurant.data[idx].restaurantID,
                                           tel: Mrestaurant.data[idx].tel,
+                                          open_time: Mrestaurant.data[idx].open_time,
+                                          close_time:  Mrestaurant.data[idx].close_time,
                                         ),
                                       ),
                                     );

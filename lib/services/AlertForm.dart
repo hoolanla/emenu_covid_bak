@@ -131,7 +131,7 @@ class AlertService {
           ),
           onPressed: () {
 
-            if(globals.typeUser == "1") {
+            if(globals.typeUser == "2") {
               Navigator.of(context, rootNavigator: true)
                   .pushNamed('/FirstPage');
             }

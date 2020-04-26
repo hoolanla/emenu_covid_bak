@@ -393,6 +393,8 @@ class _ShowData extends State<OrderDetail> {
                             builder: (context) => DetailCommendPage(
                                   restaurantID: globals.restaurantID,
                               tel: globals.restaurantTel,
+                              open_time: globals.openTimeRest,
+                              close_time: globals.closeTimeRest,
                                 )),
                       );
                     } else {}

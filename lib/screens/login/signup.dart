@@ -89,6 +89,9 @@ class _SignUpState extends State<SignUp> {
 
       String strBody =
           '{"tel":"${tel}","password":"${password}","username":"${username}","type":"${globals.typeUser}"}';
+
+      print(strBody);
+
       var feed = await NetworkFoods.insertRegister(strBody: strBody);
       var data = DataFeed(feed: feed);
 
