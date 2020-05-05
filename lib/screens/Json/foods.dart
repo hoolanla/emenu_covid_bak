@@ -14,6 +14,8 @@ import 'package:emenu_covid/models/logout.dart';
 import 'package:emenu_covid/models/orderHeader.dart';
 import 'package:emenu_covid/models/orderDetail.dart';
 import 'package:emenu_covid/models/flagDelivery.dart';
+import 'package:emenu_covid/models/information.dart';
+import 'package:emenu_covid/models/setMenu.dart';
 import 'package:http/http.dart' as http;
 import 'package:emenu_covid/globals.dart' as globals;
 
@@ -39,11 +41,28 @@ class NetworkFoods {
     return _menu;
   }
 
+
+  static Future<Information> loadInformation() async {
+    String url = 'http://103.82.248.128/eMenuAPI/api/eMenu/DelGetInformation';
+    String Strbody = '{"restaurantID":""}';
+    var response = await http.post(
+      '$url',
+      headers: {"Content-Type": "application/json"},
+body: Strbody,
+    );
+    final jsonResponse = json.decode(response.body.toString());
+    print(response.body.toString());
+
+    Information _information = new Information.fromJson(jsonResponse);
+    return _information;
+  }
+
+
+
   static Future<Restaurant> loadRestaurant() async {
     String url = 'http://103.82.248.128/eMenuAPI/api/eMenu/DelGetFirstPage';
     String Strbody = '{"restaurantID":"","Latitude":"${globals.latitude}","Longtitude":"${globals.longtitude}"}';
 
-    print(Strbody);
     var response = await http.post(
       '$url',
       headers: {"Content-Type": "application/json"},
@@ -52,6 +71,23 @@ class NetworkFoods {
     final jsonResponse = json.decode(response.body.toString());
     Restaurant _restaurant = new Restaurant.fromJson(jsonResponse);
     return _restaurant;
+  }
+
+
+  static Future<setMenu> loadMenu() async {
+    String url = 'http://103.82.248.128/eMenuAPI/api/eMenu/DelGetMenu';
+    String Strbody = '{"restaurantID":"${globals.restaurantID}"}';
+    var response = await http.post(
+      '$url',
+      headers: {"Content-Type": "application/json"},
+      body: Strbody,
+    );
+    final jsonResponse = json.decode(response.body.toString());
+
+    print(response.body.toString());
+
+    setMenu _menu = new setMenu.fromJson(jsonResponse);
+    return _menu;
   }
 
   static Future<LogoutTable> loadLogout(String strBody) async {

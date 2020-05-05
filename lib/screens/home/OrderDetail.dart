@@ -583,7 +583,6 @@ class _ShowData extends State<OrderDetail> {
 
 class DataFeed {
   RetStatusInsertOrder feed;
-
   DataFeed({this.feed});
 }
 

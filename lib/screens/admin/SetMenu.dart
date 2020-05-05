@@ -1,5 +1,5 @@
-import 'package:emenu_covid/models/orderDetailToday.dart';
-import 'package:emenu_covid/models/orderHeader.dart';
+
+import 'package:emenu_covid/models/setMenu.dart';
 import 'package:emenu_covid/models/orderHeaderToday.dart';
 import 'package:flutter/material.dart';
 import 'package:emenu_covid/models/order.dart';
@@ -15,219 +15,117 @@ import 'package:url_launcher/url_launcher.dart' as Tlaunch;
 import 'package:condition/condition.dart';
 import 'package:emenu_covid/screens/admin/WebviewMenu.dart';
 import 'package:emenu_covid/screens/admin/QRcode.dart';
-import 'package:emenu_covid/screens/admin/SetMenu.dart';
 
 
-Future<ResultOrderHeaderToday> resultOrderHeaderToday;
-List<ResultOrderHeaderToday> _searchResult = [];
-List<ResultOrderHeaderToday> _orderDetails = [];
-Future<double> _totalsCheckbill;
+Future<setMenu> _menuList;
 
-String jsonBody;
 
-Future<strJsonOrder> JsonOrder;
-
-int foodsID;
-String foodsName;
-double price;
-String size;
-String description;
-String images;
-int qty;
-String taste;
-
-String iTest = '';
 
 void main() {
-  runApp(OrderHeaderToday());
+  runApp(SetMenu());
 }
 
-class OrderHeaderToday extends StatefulWidget {
+class SetMenu extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
     return _ShowData();
   }
 }
 
-class _ShowData extends State<OrderHeaderToday> {
+class _ShowData extends State<SetMenu> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  TextEditingController editingController = TextEditingController();
 
-  String strBody = '{"restaurantID":"${globals.restaurantID}","status":"0"}';
-  var dbHelper;
-  bool isUpdating;
 
   @override
   void initState() {
     super.initState();
-    dbHelper = DatabaseHelper();
-    refreshOrderHeaderToday();
+    refreshMenu();
   }
 
-  refreshOrderHeaderToday() {
+  refreshMenu() {
     setState(() {
 
-      print(globals.restaurantID + "  " + globals.userID);
-      resultOrderHeaderToday = NetworkFoods.loadOrderHeaderToday(strBody);
+      _menuList = NetworkFoods.loadMenu();
     });
   }
 
-  Widget _ListSectionStatus({ResultOrderHeaderToday menu}) => ListView.builder(
-        itemBuilder: (context, int idx) {
-          return Padding(
-            padding: EdgeInsets.symmetric(vertical: 1.0),
-            child: Column(
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 8.0,
-                    vertical: 1.0,
+  Widget _ListSectionStatus({setMenu menu}) => ListView.builder(
+    itemBuilder: (context, int idx) {
+      return Padding(
+        padding: EdgeInsets.symmetric(vertical: 1.0),
+        child: Column(
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: 8.0,
+                vertical: 1.0,
+              ),
+              child: Container(
+                child: new ListTile(
+//                  onTap: () {
+//                    Navigator.push(
+//                      context,
+//                      MaterialPageRoute(
+//                        builder: (context) => OrderDetailTodayPage(
+//                          orderID: menu.menuList[idx].menuID,
+//                          restaurantID: globals.restaurantID,
+//                          status: menu.menuList[idx].menuActivate,
+//                        ),
+//                      ),
+//                    );
+//                  },
+                  title: Text(
+
+                        menu.menuList[idx].menuName.toString(),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Kanit',
+                      color: Colors.deepOrange,
+                    ),
                   ),
-                  child: Container(
-                    child: new ListTile(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => OrderDetailTodayPage(
-                              orderID: menu.orderHeaderTodayList[idx].orderID,
-                              restaurantID: globals.restaurantID,
-                              status: menu.orderHeaderTodayList[idx].status,
-                            ),
-                          ),
-                        );
-                      },
-                      title: Text(
-                        menu.orderHeaderTodayList[idx].createDate.toString() +
-                            '  ' +
-                            menu.orderHeaderTodayList[idx].orderID.toString(),
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'Kanit',
-                          color: Colors.deepOrange,
-                        ),
-                      ),
-                      subtitle: new Column(
+                  subtitle: new Column(
+                    children: <Widget>[
+
+                      new Row(
                         children: <Widget>[
-                          new Row(
-                            children: <Widget>[
+                          Text(
 
-
-                              Text(
-                                'คุณ: ' +
-                                    menu.orderHeaderTodayList[idx].userName
-                                        .toString()
-                                        .toString(),
-                                style: TextStyle(
-                                    fontFamily: 'Kanit',
-                                    color: Colors.black,
-                                    fontSize: 18),
-                              ),
-                            ],
-                          ),
-                          new Row(
-                            children: <Widget>[
-                              Text(
-                                menu.orderHeaderTodayList[idx].qty.toString() +
-                                    'x     รวมราคา: ' +
-                                    menu.orderHeaderTodayList[idx].totalPrice
-                                        .toString()
-                                        .toString() +
-                                    ' บาท',
-                                style: TextStyle(
-                                  fontFamily: 'Kanit',
-                                ),
-                              )
-                            ],
-                          ),
-                          new Row(
-                            children: <Widget>[
-                              Column(children: <Widget>[
-                                Text(
-                                  menu.orderHeaderTodayList[idx].tel.toString(),
-                                  style: TextStyle(
-                                    fontFamily: 'Kanit',
-                                    fontSize: 16,
-                                    color: Colors.grey[700],
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ]),
-                              IconButton(
-                                icon: Icon(
-                                  Icons.phone_in_talk,
-                                  color: Colors.yellow[800],
-                                  size: 25.0,
-                                ),
-                                onPressed: () {
-                                  String tmp = menu
-                                      .orderHeaderTodayList[idx].tel
-                                      .toString()
-                                      .substring(1);
-                                  if (tmp.length > 0) {
-                                    Tlaunch.launch("tel:+66" + tmp);
-                                  }
-                                },
-                              ),
-                            ],
-                          ),
+                                menu.menuList[idx].price
+                                    .toString()
+                                    .toString() +
+                                ' บาท',
+                            style: TextStyle(
+                              fontFamily: 'Kanit',
+                            ),
+                          )
                         ],
                       ),
-                      trailing: _buildText(
-                          status:
-                              menu.orderHeaderTodayList[idx].status.toString()),
-                    ),
-                    decoration: new BoxDecoration(
-                      border: Border(
-                        bottom: new BorderSide(
-                          color: Colors.cyan,
-                          width: 0.5,
-                          style: BorderStyle.solid,
-                        ),
-                      ),
+
+                    ],
+                  ),
+                  trailing: _buildText(
+                      status:
+                      menu.menuList[idx].menuActivate.toString()),
+                ),
+                decoration: new BoxDecoration(
+                  border: Border(
+                    bottom: new BorderSide(
+                      color: Colors.cyan,
+                      width: 0.5,
+                      style: BorderStyle.solid,
                     ),
                   ),
-                )
-              ],
-            ),
-          );
-        },
-        itemCount: menu.orderHeaderTodayList.length,
+                ),
+              ),
+            )
+          ],
+        ),
       );
+    },
+    itemCount: menu.menuList.length,
+  );
 
 
-  Widget _buildSearch(){
-   return Padding(
-      padding: const EdgeInsets.all(8.0),
-
-      child: TextField(
-        onChanged: (value) {
-setState(() {
-  _searchResult.clear();
-  if (value.isEmpty) {
-    setState(() {});
-    return;
-  }
-
-  _orderDetails.forEach((userDetail) {
-
-  });
-
-
-});
-        },
-        controller: editingController,
-        decoration: InputDecoration(
-
-            labelText: "Search",
-            hintText: "Search",
-            prefixIcon: Icon(Icons.search),
-            border: OutlineInputBorder(
-
-                borderRadius: BorderRadius.all(Radius.circular(25.0)))),
-      ),
-    );
-  }
 
 
   Widget _buildText({String status}) {
@@ -257,13 +155,13 @@ setState(() {
         title: Row(children: <Widget>[
           new Expanded(
               child: new Text(
-            "รายการ",
-            style: TextStyle(
-              fontFamily: 'Kanit',
-              color: Colors.grey,
-              fontWeight: FontWeight.bold,
-            ),
-          )),
+                "รายการ",
+                style: TextStyle(
+                  fontFamily: 'Kanit',
+                  color: Colors.grey,
+                  fontWeight: FontWeight.bold,
+                ),
+              )),
         ]),
         trailing: Text(
           'สถานะ ',
@@ -299,8 +197,8 @@ setState(() {
 
   listStatusOrder() {
     return Expanded(
-      child: FutureBuilder<ResultOrderHeaderToday>(
-          future: resultOrderHeaderToday,
+      child: FutureBuilder<setMenu>(
+          future: _menuList,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               if (snapshot.data != null) {
@@ -383,7 +281,7 @@ setState(() {
           mainAxisSize: MainAxisSize.min,
           verticalDirection: VerticalDirection.down,
           children: <Widget>[
-          //  _buildSearch(),
+            //  _buildSearch(),
             HeaderColumn(),
             listStatusOrder(),
             Row(children: <Widget>[
@@ -401,7 +299,7 @@ setState(() {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => OrderHeaderToday()),
+                          builder: (context) => SetMenu()),
                     );
                   },
                 ),
@@ -440,7 +338,7 @@ setState(() {
                     if (globals.restaurantID != '') {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => SetMenu()),
+                        MaterialPageRoute(builder: (context) => WebviewMenu()),
                       );
                     } else {}
                   } else {}

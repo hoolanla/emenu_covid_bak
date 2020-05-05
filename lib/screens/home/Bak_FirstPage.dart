@@ -39,17 +39,17 @@ String open_time;
 Future<Information> resultInformation;
 
 void main() {
-  runApp(FirstPage());
+  runApp(B_FirstPage());
 }
 
-class FirstPage extends StatefulWidget {
+class B_FirstPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
     return _ShowData();
   }
 }
 
-class _ShowData extends State<FirstPage> {
+class _ShowData extends State<B_FirstPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   var dbHelper;
 
@@ -57,16 +57,39 @@ class _ShowData extends State<FirstPage> {
   void initState() {
     super.initState();
     dbHelper = DatabaseHelper();
-
-   _getInformation();
- //   _checkDateTimeCurfuse();
+    _checkDateTimeCurfuse();
+    _getInformation();
   }
 
 
   _checkDateTimeCurfuse() {
+    String DateTimeformatted1;
+    String DateTimeformatted2;
 
+    format(Duration d) => d.toString().split('.').first.padLeft(8, "0");
+    final tClose = Duration(hours: 21, minutes: 00); // 21:00
+    final tOpen = Duration(hours: 04, minutes: 00); // 04:00
 
+    var now = new DateTime.now();
+    var formatter = new DateFormat('yyyy-MM-dd');
+    String Dateformatted = formatter.format(now);
 
+    DateTimeformatted1 = Dateformatted + ' ' + format(tClose);
+    DateTimeformatted2 = Dateformatted + ' ' + format(tOpen);
+    DateTime dtClose = DateTime.parse(DateTimeformatted1);
+    DateTime dtOpen = DateTime.parse(DateTimeformatted2);
+
+    if (DateTime.now().isAfter(dtClose) &&
+        DateTime.now().isBefore(dtOpen.add(new Duration(days: 1)))) {
+      globals.curfew = "1";
+      if (globals.showDialogFirstRun == "0") {
+        globals.showDialogFirstRun == "1";
+        WidgetsBinding.instance
+            .addPostFrameCallback((_) => _onAlertFirstRun(context));
+      }
+    } else {
+      globals.curfew = "0";
+    }
   }
 
   listRestaurant() {
@@ -219,7 +242,7 @@ class _ShowData extends State<FirstPage> {
       type: AlertType.none,
       title: "COVID-19",
       desc:
-          "เนื่องด้วยสถานการณ์โควิดที่เกินขึ้นตอน APP จะเปิดให้สั่งอาหารได้เฉพาะ ช่วงเวลา 21:00 - 04:00",
+      "เนื่องด้วยสถานการณ์โควิดที่เกินขึ้นตอน APP จะเปิดให้สั่งอาหารได้เฉพาะ ช่วงเวลา 21:00 - 04:00",
       style: alertStyleFirstRun,
       buttons: [
         DialogButton(
@@ -253,8 +276,8 @@ class _ShowData extends State<FirstPage> {
 
   Widget _listCard({Restaurant Mrestaurant}) => ListView.separated(
       separatorBuilder: (context, idx) => SizedBox(
-            height: 10,
-          ),
+        height: 10,
+      ),
       itemCount: Mrestaurant.data.length,
       itemBuilder: (context, idx) {
         return ClipRRect(
@@ -285,13 +308,13 @@ class _ShowData extends State<FirstPage> {
                       width: 340.0,
                       decoration: BoxDecoration(
                           gradient: LinearGradient(
-                        colors: [
-                          Colors.black,
-                          Colors.black12,
-                        ],
-                        begin: Alignment.bottomCenter,
-                        end: Alignment.topCenter,
-                      )),
+                            colors: [
+                              Colors.black,
+                              Colors.black12,
+                            ],
+                            begin: Alignment.bottomCenter,
+                            end: Alignment.topCenter,
+                          )),
                     ),
                   ),
 
@@ -507,7 +530,7 @@ class _ShowData extends State<FirstPage> {
                 child: Image.asset(
                   'assets/images/CovidFoodLogoBar.png',
                   fit: BoxFit.cover,
-             //  height: 240.0,
+                  //  height: 240.0,
                 )),
             // HeaderColumn(),
             listRestaurant(),
@@ -545,57 +568,15 @@ class _ShowData extends State<FirstPage> {
   }
 
 
-    void _getInformation() async {
-        var feed = await NetworkFoods.loadInformation();
-        var data = DataFeed(feed: feed);
-        if (data.feed.openTime == "True") {
+  void _getInformation() async {
+    var feed = await NetworkFoods.loadInformation();
+    var data = DataFeed(feed: feed);
+    if (data.feed.ResultOk == "True") {
 
-
-          String DateTimeformatted1;
-          String DateTimeformatted2;
-
-          format(Duration d) => d.toString().split('.').first.padLeft(8, "0");
-          final tClose = Duration(hours: 21, minutes: 00); // 21:00 close time
-          final tOpen = Duration(hours: 04, minutes: 00); // 04:00 opentitme
-
-          var now = new DateTime.now();
-          var formatter = new DateFormat('yyyy-MM-dd');
-          String Dateformatted = formatter.format(now);
-
-          DateTimeformatted1 = Dateformatted + ' ' + format(tClose);
-          DateTimeformatted2 = Dateformatted + ' ' + format(tOpen);
-          DateTime dtClose = DateTime.parse(DateTimeformatted1);
-          DateTime dtOpen = DateTime.parse(DateTimeformatted2);
-
-
-
-
-   globals.curfew = "1";
-
-   if (["", null, false, 0].contains(globals.showDialogFirstRun))
-     {
-       globals.showDialogFirstRun = "0";
-     }
-
-
-     if (globals.showDialogFirstRun == "0") {
-       globals.showDialogFirstRun == "1";
-       WidgetsBinding.instance
-           .addPostFrameCallback((_) => _onAlertFirstRun(context));
-     }
-
-
-
-
-
-        }
-        else
-          {
-            globals.curfew = "0";
-          }
-
-        }
     }
+
+  }
+}
 
 
 
